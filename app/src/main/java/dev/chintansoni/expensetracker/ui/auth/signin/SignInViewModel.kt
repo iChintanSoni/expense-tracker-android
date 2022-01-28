@@ -1,14 +1,12 @@
 package dev.chintansoni.expensetracker.ui.auth.signin
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dev.chintansoni.preference.LoginPreferenceDataStore
+import dev.chintansoni.domain.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
-class SignInViewModel(private val loginPreferenceDataStore: LoginPreferenceDataStore) :
+class SignInViewModel(private val userRepository: UserRepository) :
     ViewModel() {
 
     private val _emailMSF: MutableStateFlow<String> = MutableStateFlow("")
@@ -25,9 +23,7 @@ class SignInViewModel(private val loginPreferenceDataStore: LoginPreferenceDataS
         _passwordMSF.value = password
     }
 
-    fun setLoginPreference() {
-        viewModelScope.launch {
-            loginPreferenceDataStore.setUserLoggedIn(true)
-        }
+    suspend fun setLoginPreference() {
+        userRepository.setUserLoggedIn(true)
     }
 }

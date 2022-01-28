@@ -9,8 +9,7 @@ import dev.chintansoni.expensetracker.ui.auth.signin.SignInView
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
 import dev.chintansoni.expensetracker.ui.auth.signup.SignUpView
 
-fun NavGraphBuilder.authRoute(
-) {
+fun NavGraphBuilder.authRoute() {
     composable(ROUTE_SIGN_IN) {
         SignInView()
     }

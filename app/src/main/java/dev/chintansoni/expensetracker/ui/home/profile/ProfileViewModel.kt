@@ -1,17 +1,15 @@
 package dev.chintansoni.expensetracker.ui.home.profile
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import dev.chintansoni.preference.LoginPreferenceDataStore
-import kotlinx.coroutines.launch
+import dev.chintansoni.domain.repository.UserRepository
 
-class ProfileViewModel(private val loginPreferenceDataStore: LoginPreferenceDataStore) :
+class ProfileViewModel(private val userRepository: UserRepository) :
     ViewModel() {
 
-    fun logout() {
-        viewModelScope.launch {
-            loginPreferenceDataStore.setUserLoggedIn(false)
-        }
+    @MainThread
+    suspend fun logout() {
+        userRepository.setUserLoggedIn(false)
     }
 
 }

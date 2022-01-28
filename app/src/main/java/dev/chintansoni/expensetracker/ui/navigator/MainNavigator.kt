@@ -12,10 +12,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class MainNavigator : Navigator<MainRoute> {
+
     private val _viewRouteStateFlow: MutableStateFlow<MainRoute?> = MutableStateFlow(null)
-    override val viewRouteStateFlow: StateFlow<MainRoute?> by lazy {
-        _viewRouteStateFlow.asStateFlow()
-    }
+
+    override val viewRouteStateFlow: StateFlow<MainRoute?>
+        get() = _viewRouteStateFlow.asStateFlow()
 
     override fun navigate(viewRoute: MainRoute?) {
         _viewRouteStateFlow.value = viewRoute
@@ -28,7 +29,7 @@ sealed class MainRoute(
     override val args: Map<String, Any> = emptyMap()
 ) : ViewRoute(route, navOptions, args) {
 
-    object SplashViewRoute : MainRoute("Splash")
+    object SplashViewRoute : MainRoute(ROUTE_SPLASH)
 
     object SplashToSignInViewRoute :
         MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_SPLASH, true).build())
@@ -46,7 +47,7 @@ sealed class MainRoute(
     object HomeToSignInViewRoute :
         MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_HOME, true).build())
 
-    object GoBackViewRoute : MainRoute("GoBack")
+    object GoBackViewRoute : MainRoute(ROUTE_GO_BACK)
 
     object AddEditExpenseViewRoute : MainRoute(ROUTE_ADD_EDIT_EXPENSE)
 }

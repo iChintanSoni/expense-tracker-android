@@ -1,11 +1,12 @@
 package dev.chintansoni.expensetracker.ui.splash
 
 import androidx.lifecycle.ViewModel
-import dev.chintansoni.preference.LoginPreferenceDataStore
+import dev.chintansoni.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
 
-class SplashViewModel(loginPreferenceDataStore: LoginPreferenceDataStore) :
+class SplashViewModel(userRepository: UserRepository) :
     ViewModel() {
 
-    val isUserLoggedInFlow = loginPreferenceDataStore.isUserLoggedIn
+    val isUserLoggedInFlow: Flow<Boolean> = userRepository.isUserLoggedIn()
 
 }

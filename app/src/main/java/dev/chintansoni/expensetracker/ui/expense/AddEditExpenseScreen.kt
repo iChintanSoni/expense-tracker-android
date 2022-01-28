@@ -76,6 +76,7 @@ fun AddEditExpenseScreen() {
     var date by remember {
         mutableStateOf(currentInstant())
     }
+    println("Date: $date")
     val dateSetListener =
         DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
             date = LocalDateTime(

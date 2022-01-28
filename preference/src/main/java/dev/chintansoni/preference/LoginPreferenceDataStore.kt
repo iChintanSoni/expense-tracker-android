@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.map
 
 private val Context.loginPreferencesDataStore: DataStore<Preferences> by preferencesDataStore(name = "LoginPreferencesDataStore")
 
-private val isUserLoggedInPreference = booleanPreferencesKey("isUserLoggedIn")
+private val isUserLoggedInPreference: Preferences.Key<Boolean> =
+    booleanPreferencesKey("isUserLoggedIn")
 
 class LoginPreferenceDataStore(private val context: Context) {
 
@@ -19,7 +20,6 @@ class LoginPreferenceDataStore(private val context: Context) {
         context.loginPreferencesDataStore.data.map {
             it[isUserLoggedInPreference] ?: false
         }
-
 
     suspend fun setUserLoggedIn(userLoggedIn: Boolean): Preferences {
         return context.loginPreferencesDataStore.edit { settings ->

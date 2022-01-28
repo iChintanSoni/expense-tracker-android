@@ -15,7 +15,7 @@ class ForgotPasswordViewModel : ViewModel() {
 
     private val _sendLinkStatusMSF: MutableStateFlow<SendLinkStatus> =
         MutableStateFlow(SendLinkStatus.Default)
-    val sendLinkStatusMSF: StateFlow<SendLinkStatus> = _sendLinkStatusMSF.asStateFlow()
+    val sendLinkStatusSF: StateFlow<SendLinkStatus> = _sendLinkStatusMSF.asStateFlow()
 
     fun setEmail(email: String) {
         _emailMSF.value = email
@@ -39,4 +39,5 @@ sealed class SendLinkStatus {
     object Default : SendLinkStatus()
     object InProgress : SendLinkStatus()
     object Success : SendLinkStatus()
+    object Failure : SendLinkStatus()
 }

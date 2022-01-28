@@ -12,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -30,6 +31,7 @@ import org.koin.androidx.compose.inject
 class ExpenseTrackerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             ExpenseTrackerTheme {
                 // A surface container using the 'background' color from the theme
@@ -51,7 +53,6 @@ fun App() {
     val viewRoute: MainRoute? by mainNavigator.viewRouteStateFlow.collectAsState()
     LaunchedEffect(key1 = viewRoute) {
         viewRoute?.let {
-            println("MainRoute: $it")
             if (it == MainRoute.GoBackViewRoute) {
                 navController.navigateUp()
             } else {
@@ -62,7 +63,7 @@ fun App() {
 
     NavHost(
         navController = navController,
-        startDestination = ROUTE_SPLASH
+        startDestination = MainRoute.SplashViewRoute.route
     ) {
         composable(ROUTE_SPLASH) {
             SplashView()
