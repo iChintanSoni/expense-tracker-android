@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.home
+package dev.chintansoni.expensetracker.ui.home.chart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,14 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 
-const val ROUTE_LIST = "List"
+const val ROUTE_CHART = "chart"
 
+@Preview(showBackground = true)
 @Composable
-fun ExpenseListView() {
-
+fun ChartView() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -26,7 +26,7 @@ fun ExpenseListView() {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "List View",
+            text = "Chart View",
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onSurface,
             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -34,30 +34,4 @@ fun ExpenseListView() {
             fontSize = 25.sp
         )
     }
-//    LazyColumn {
-////        items(
-////            items = transactions,
-////            key = {
-////                it.id
-////            }
-////        ) { transaction ->
-////            Row(
-////                modifier = Modifier
-////                    .fillMaxWidth()
-////                    .wrapContentHeight()
-////                    .padding(vertical = 25.dp),
-////                horizontalArrangement = Arrangement.Center,
-////                verticalAlignment = Alignment.CenterVertically
-////            ) {
-////                Text(
-////                    "\uD83C\uDF3F " + transaction.amount,
-////                    style = MaterialTheme.typography.h3
-////                )
-////            }
-////        }
-//    }
-}
-
-class ListComposableViewModel : ViewModel() {
-
 }
