@@ -4,10 +4,24 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
+val currentTimeZone = TimeZone.currentSystemDefault()
+
 fun Instant.toDateTime(): LocalDateTime {
-    return this.toLocalDateTime(TimeZone.currentSystemDefault())
+    return this.toLocalDateTime(currentTimeZone)
+}
+
+fun toInstant(day: Int, month: Int, year: Int): Instant {
+    return LocalDateTime(
+        year,
+        month,
+        day,
+        0,
+        0,
+        0
+    ).toInstant(currentTimeZone)
 }
 
 fun currentInstant(): Instant {

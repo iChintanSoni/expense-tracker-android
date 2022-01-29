@@ -111,7 +111,7 @@ fun Fab() {
         onClick = { mainNavigator.navigate(MainRoute.AddEditExpenseViewRoute) },
         shape = fabShape
     ) {
-        Icon(AddIcon, "")
+        Icon(AddIcon, "Add Expense Icon")
     }
 }
 

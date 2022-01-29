@@ -17,7 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.auth.authRoute
-import dev.chintansoni.expensetracker.ui.expense.AddEditExpenseScreen
+import dev.chintansoni.expensetracker.ui.expense.AddEditExpenseView
 import dev.chintansoni.expensetracker.ui.expense.ROUTE_ADD_EDIT_EXPENSE
 import dev.chintansoni.expensetracker.ui.home.HomeView
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
@@ -73,7 +73,7 @@ fun App() {
             HomeView()
         }
         composable(ROUTE_ADD_EDIT_EXPENSE) {
-            AddEditExpenseScreen()
+            AddEditExpenseView()
         }
     }
 }
