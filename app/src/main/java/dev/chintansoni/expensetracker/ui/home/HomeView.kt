@@ -19,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.home.chart.ROUTE_CHART
@@ -35,6 +37,12 @@ import dev.chintansoni.expensetracker.ui.theme.PersonIcon
 import org.koin.androidx.compose.inject
 
 const val ROUTE_HOME = "home"
+
+fun NavGraphBuilder.homeRoute() {
+    composable(ROUTE_HOME) {
+        HomeView()
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -99,7 +107,7 @@ fun NavigationGraph(
         startDestination = NavItem.ChartNavItem.route,
         Modifier.padding(innerPadding)
     ) {
-        homeRoute()
+        homeContentRoute()
     }
 }
 
@@ -108,7 +116,7 @@ fun Fab() {
     val mainNavigator: MainNavigator by inject()
     val fabShape = RoundedCornerShape(50)
     FloatingActionButton(
-        onClick = { mainNavigator.navigate(MainRoute.AddEditExpenseViewRoute) },
+        onClick = { mainNavigator.navigate(MainRoute.TransactionDetailViewRoute) },
         shape = fabShape
     ) {
         Icon(AddIcon, "Add Expense Icon")

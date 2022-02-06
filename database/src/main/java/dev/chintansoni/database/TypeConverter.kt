@@ -1,7 +1,7 @@
 package dev.chintansoni.database
 
 import androidx.room.TypeConverter
-import dev.chintansoni.domain.model.TransactionType
+import dev.chintansoni.database.entity.transaction.TransactionType
 
 class TypeConverter {
 

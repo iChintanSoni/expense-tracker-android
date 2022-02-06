@@ -13,7 +13,6 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "Expense Tracker"
-rootProject.buildFileName = "build.gradle.kts"
 include("app")
 include("database")
 include("preference")

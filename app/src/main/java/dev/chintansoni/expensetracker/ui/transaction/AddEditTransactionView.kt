@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.expense
+package dev.chintansoni.expensetracker.ui.transaction
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
@@ -21,6 +21,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,6 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import dev.chintansoni.domain.model.Transaction
 import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
@@ -48,19 +55,31 @@ import dev.chintansoni.expensetracker.ui.util.toInstant
 import kotlinx.datetime.Instant
 import org.koin.androidx.compose.inject
 
-const val ROUTE_ADD_EDIT_EXPENSE = "AddEditExpense"
+const val PARAM_TRANSACTION_DETAIL = "transactionId"
+const val ROUTE_TRANSACTION_DETAIL = "transactionDetail/{${PARAM_TRANSACTION_DETAIL}}"
+
+val arguments = listOf(navArgument(PARAM_TRANSACTION_DETAIL) { type = NavType.IntType })
+
+fun NavBackStackEntry.argumentTransactionId(): Int {
+    return arguments?.getInt(PARAM_TRANSACTION_DETAIL, 0) ?: 0
+}
+
+fun NavGraphBuilder.transactionDetailRoute() {
+    composable(ROUTE_TRANSACTION_DETAIL, arguments) {
+        TransactionDetailView(transactionId = it.argumentTransactionId())
+    }
+}
 
 @Composable
-fun AddEditExpenseView() {
+fun TransactionDetailView(transactionId: Int) {
 
     val mainNavigator: MainNavigator by inject()
+    val transactionDetailViewModel: TransactionDetailViewModel by inject()
+    val transaction: Transaction? by transactionDetailViewModel.getTransactionFlow(transactionId)
+        .collectAsState(initial = null)
 
-    var amount by remember {
-        mutableStateOf("")
-    }
-    var amountError by remember {
-        mutableStateOf("")
-    }
+    var amount by remember { mutableStateOf("") }
+    var amountError by remember { mutableStateOf("") }
     val onAmountChange: (String) -> Unit = {
         amount = it
         amountError = try {
@@ -71,19 +90,15 @@ fun AddEditExpenseView() {
         }
     }
 
-    var date by remember {
-        mutableStateOf(currentInstant())
-    }
-    val onDateChange: (Instant) -> Unit = {
-        date = it
-    }
+    var date: Instant by remember { mutableStateOf(currentInstant()) }
+    val onDateChange: (Instant) -> Unit = { date = it }
 
-    var note by remember {
-        mutableStateOf("")
-    }
+    var note: String by remember { mutableStateOf("") }
+    val onNoteChange: (String) -> Unit = { note = it }
 
-    val onNoteChange: (String) -> Unit = {
-        note = it
+    var category: String by remember { mutableStateOf("") }
+    val categoryChange: (String) -> Unit = {
+
     }
 
     BackHandler {
@@ -110,7 +125,9 @@ fun AddEditExpenseContent(
     date: Instant = currentInstant(),
     onDateChange: (Instant) -> Unit = {},
     note: String = "",
-    onNoteChange: (String) -> Unit = {}
+    onNoteChange: (String) -> Unit = {},
+    category: String = "",
+    onCategoryChange: (String) -> Unit = {}
 ) {
     Scaffold(
         topBar = {

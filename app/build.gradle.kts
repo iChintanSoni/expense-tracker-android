@@ -1,19 +1,22 @@
 val koinVersion: String by project
 val composeVersion: String by project
 val kotlinxDateTimeVersion: String by project
+val compileSDKVersion: String by project
+val minSDKVersion: String by project
+val targetSDKVersion: String by project
 
 plugins {
     id("com.android.application")
-    kotlin("android")
+    id("kotlin-android")
 }
 
 android {
-    compileSdk = 31
+    compileSdk = compileSDKVersion.toInt()
 
     defaultConfig {
         applicationId = "dev.chintansoni.expensetracker"
-        minSdk = 21
-        targetSdk = 31
+        minSdk = minSDKVersion.toInt()
+        targetSdk = targetSDKVersion.toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -55,8 +58,8 @@ dependencies {
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha01")
+    implementation("androidx.activity:activity-compose:1.5.0-alpha01")
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha01")
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
@@ -73,10 +76,10 @@ dependencies {
 
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-core:$koinVersion")
-    // Koin for Android
+
+    // Koin for Dependency Injection
     implementation("io.insert-koin:koin-android:$koinVersion")
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
-    // Testing
     testImplementation("io.insert-koin:koin-test:$koinVersion")
 
     implementation("androidx.core:core-splashscreen:1.0.0-beta01")

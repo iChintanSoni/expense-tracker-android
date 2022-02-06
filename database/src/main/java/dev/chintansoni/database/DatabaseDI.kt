@@ -7,7 +7,15 @@ val databaseModule = module {
     single {
         provideExpenseTrackerDatabase(get())
     }
+    single {
+        getDatabase().transactionDao()
+    }
+}
 
+val testDatabaseModule = module {
+    single {
+        provideTestExpenseTrackerDatabase(get())
+    }
     single {
         getDatabase().transactionDao()
     }

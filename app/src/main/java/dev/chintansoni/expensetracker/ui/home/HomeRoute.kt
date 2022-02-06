@@ -6,7 +6,7 @@ import dev.chintansoni.expensetracker.ui.home.chart.ChartView
 import dev.chintansoni.expensetracker.ui.home.list.ListView
 import dev.chintansoni.expensetracker.ui.home.profile.ProfileView
 
-fun NavGraphBuilder.homeRoute() {
+fun NavGraphBuilder.homeContentRoute() {
     composable(NavItem.ChartNavItem.route) { ChartView() }
     composable(NavItem.ListNavItem.route) { ListView() }
     composable(NavItem.ProfileNavItem.route) { ProfileView() }

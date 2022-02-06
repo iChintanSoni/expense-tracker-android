@@ -1,4 +1,8 @@
 val koinVersion: String by project
+val compileSDKVersion: String by project
+val minSDKVersion: String by project
+val targetSDKVersion: String by project
+val coroutinesVersion: String by project
 
 plugins {
     id("com.android.library")
@@ -6,11 +10,11 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = compileSDKVersion.toInt()
 
     defaultConfig {
-        minSdk = 21
-        targetSdk = 31
+        minSdk = minSDKVersion.toInt()
+        targetSdk = targetSDKVersion.toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
@@ -32,16 +36,16 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.5.0")
+
     implementation(project(":preference"))
     implementation(project(":database"))
     implementation(project(":domain"))
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-android:$koinVersion")

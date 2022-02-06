@@ -42,11 +42,14 @@ fun ForgotPasswordScreen() {
 
     val onSendLinkClick: () -> Unit = {
         forgotPasswordViewModel.sendLink()
-//        mainNavigator.navigate(MainRoute.GoBackViewRoute)
     }
 
     val onBackClick: () -> Unit = {
         mainNavigator.navigate(MainRoute.GoBackViewRoute)
+    }
+
+    val onTryAgainClick: () -> Unit = {
+        forgotPasswordViewModel.resetSendLinkStatus()
     }
 
     ForgotPasswordContent(
@@ -54,6 +57,7 @@ fun ForgotPasswordScreen() {
         onEmailChange = onEmailChange,
         onSendLinkClick = onSendLinkClick,
         onBackClick = onBackClick,
+        onTryAgainClick = onTryAgainClick,
         sendLinkStatus = sendLinkStatus
     )
 }

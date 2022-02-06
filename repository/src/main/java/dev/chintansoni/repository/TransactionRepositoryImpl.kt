@@ -24,15 +24,15 @@ class TransactionRepositoryImpl(private val transactionDao: TransactionDao) :
             transactionEntity?.toDomainModel()
         }
 
-    override suspend fun addTransaction(transaction: Transaction) {
+    override suspend fun addTransaction(transaction: Transaction): Long {
         return transactionDao.insertTransaction(transaction.toDBModel())
     }
 
-    override suspend fun updateTransaction(transaction: Transaction) {
+    override suspend fun updateTransaction(transaction: Transaction): Int {
         return transactionDao.updateTransaction(transaction.toDBModel())
     }
 
-    override suspend fun deleteTransaction(transaction: Transaction) {
+    override suspend fun deleteTransaction(transaction: Transaction): Int {
         return transactionDao.deleteTransaction(transaction.toDBModel())
     }
 

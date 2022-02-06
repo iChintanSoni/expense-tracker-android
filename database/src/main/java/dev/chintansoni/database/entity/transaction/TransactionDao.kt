@@ -16,13 +16,13 @@ interface TransactionDao {
     fun getByIdFlow(id: Int): Flow<TransactionEntity?>
 
     @Insert
-    suspend fun insertTransaction(transactionEntity: TransactionEntity)
+    suspend fun insertTransaction(transactionEntity: TransactionEntity): Long
 
     @Update
-    suspend fun updateTransaction(transactionEntity: TransactionEntity)
+    suspend fun updateTransaction(transactionEntity: TransactionEntity): Int
 
     @Delete
-    suspend fun deleteTransaction(transactionEntity: TransactionEntity)
+    suspend fun deleteTransaction(transactionEntity: TransactionEntity): Int
 
     @Query("DELETE FROM TransactionEntity")
     suspend fun clearTable()

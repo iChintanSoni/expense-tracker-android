@@ -14,18 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.auth.authRoute
-import dev.chintansoni.expensetracker.ui.expense.AddEditExpenseView
-import dev.chintansoni.expensetracker.ui.expense.ROUTE_ADD_EDIT_EXPENSE
-import dev.chintansoni.expensetracker.ui.home.HomeView
-import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
+import dev.chintansoni.expensetracker.ui.home.homeRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
-import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
-import dev.chintansoni.expensetracker.ui.splash.SplashView
+import dev.chintansoni.expensetracker.ui.splash.splashRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
+import dev.chintansoni.expensetracker.ui.transaction.transactionDetailRoute
 import org.koin.androidx.compose.inject
 
 class ExpenseTrackerActivity : ComponentActivity() {
@@ -65,16 +61,10 @@ fun App() {
         navController = navController,
         startDestination = MainRoute.SplashViewRoute.route
     ) {
-        composable(ROUTE_SPLASH) {
-            SplashView()
-        }
+        splashRoute()
         authRoute()
-        composable(ROUTE_HOME) {
-            HomeView()
-        }
-        composable(ROUTE_ADD_EDIT_EXPENSE) {
-            AddEditExpenseView()
-        }
+        homeRoute()
+        transactionDetailRoute()
     }
 }
 

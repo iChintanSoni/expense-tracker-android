@@ -24,3 +24,10 @@ fun provideExpenseTrackerDatabase(context: Context): ExpenseTrackerDatabase {
         DATABASE_NAME
     ).build()
 }
+
+fun provideTestExpenseTrackerDatabase(context: Context): ExpenseTrackerDatabase {
+    return Room.inMemoryDatabaseBuilder(
+        context,
+        ExpenseTrackerDatabase::class.java
+    ).build()
+}

@@ -8,6 +8,4 @@ sealed class ViewRoute(
     open val route: String,
     open val navOptions: NavOptions = NavOptions.Builder().build(),
     open val args: Map<String, Any> = emptyMap()
-) {
-    object GoBackViewRoute : ViewRoute(ROUTE_GO_BACK)
-}
+)

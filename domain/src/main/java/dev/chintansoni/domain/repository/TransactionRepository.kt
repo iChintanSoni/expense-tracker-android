@@ -9,11 +9,11 @@ interface TransactionRepository {
 
     fun getTransactionByIdFlow(id: Int): Flow<Transaction?>
 
-    suspend fun addTransaction(transaction: Transaction)
+    suspend fun addTransaction(transaction: Transaction): Long
 
-    suspend fun updateTransaction(transaction: Transaction)
+    suspend fun updateTransaction(transaction: Transaction): Int
 
-    suspend fun deleteTransaction(transaction: Transaction)
+    suspend fun deleteTransaction(transaction: Transaction): Int
 
     suspend fun clear()
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class ForgotPasswordViewModel : ViewModel() {
 
@@ -24,14 +25,17 @@ class ForgotPasswordViewModel : ViewModel() {
     fun sendLink() {
         _sendLinkStatusMSF.value = SendLinkStatus.InProgress
         viewModelScope.launch {
-            delay(3000)
-            _sendLinkStatusMSF.value = SendLinkStatus.Success
+            delay(1000)
+            _sendLinkStatusMSF.value = if (Random.nextBoolean()) {
+                SendLinkStatus.Success
+            } else {
+                SendLinkStatus.Failure
+            }
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        println("ForgotPassword ViewModel cleared")
+    fun resetSendLinkStatus() {
+        _sendLinkStatusMSF.value = SendLinkStatus.Default
     }
 }
 

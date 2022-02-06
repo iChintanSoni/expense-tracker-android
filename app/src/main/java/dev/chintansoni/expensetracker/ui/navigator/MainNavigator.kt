@@ -4,9 +4,9 @@ import androidx.navigation.NavOptions
 import dev.chintansoni.expensetracker.ui.auth.forgotpassword.ROUTE_FORGOT_PASSWORD
 import dev.chintansoni.expensetracker.ui.auth.signin.ROUTE_SIGN_IN
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
-import dev.chintansoni.expensetracker.ui.expense.ROUTE_ADD_EDIT_EXPENSE
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
 import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
+import dev.chintansoni.expensetracker.ui.transaction.ROUTE_TRANSACTION_DETAIL
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -49,5 +49,5 @@ sealed class MainRoute(
 
     object GoBackViewRoute : MainRoute(ROUTE_GO_BACK)
 
-    object AddEditExpenseViewRoute : MainRoute(ROUTE_ADD_EDIT_EXPENSE)
+    object TransactionDetailViewRoute : MainRoute(ROUTE_TRANSACTION_DETAIL)
 }

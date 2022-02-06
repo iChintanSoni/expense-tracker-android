@@ -12,6 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
@@ -19,6 +21,12 @@ import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_SPLASH = "SplashView"
+
+fun NavGraphBuilder.splashRoute() {
+    composable(ROUTE_SPLASH) {
+        SplashView()
+    }
+}
 
 @Composable
 fun SplashView() {

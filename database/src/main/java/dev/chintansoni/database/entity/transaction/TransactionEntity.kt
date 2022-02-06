@@ -2,7 +2,6 @@ package dev.chintansoni.database.entity.transaction
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import dev.chintansoni.domain.model.TransactionType
 
 @Entity
 data class TransactionEntity(
@@ -16,3 +15,8 @@ data class TransactionEntity(
     val updatedDate: Long,
     val deletedDate: Long
 )
+
+sealed class TransactionType(val type: Int) {
+    object Credit : TransactionType(1)
+    object Debit : TransactionType(2)
+}
