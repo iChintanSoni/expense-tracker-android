@@ -127,7 +127,6 @@ class ExampleInstrumentedTest : KoinTest {
         }
     }
 
-
     @After
     fun tearDown() {
         stopKoin()

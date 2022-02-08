@@ -26,4 +26,10 @@ class LoginPreferenceDataStore(private val context: Context) {
             settings[isUserLoggedInPreference] = userLoggedIn
         }
     }
+
+    suspend fun clear(): Preferences {
+        return context.loginPreferencesDataStore.edit { settings ->
+            settings.clear()
+        }
+    }
 }

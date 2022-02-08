@@ -46,6 +46,8 @@ dependencies {
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-android:$koinVersion")
-    // Testing
     testImplementation("io.insert-koin:koin-test:$koinVersion")
+
+    androidTestImplementation("io.insert-koin:koin-test:$koinVersion")
+    androidTestImplementation("io.insert-koin:koin-android:$koinVersion")
 }
