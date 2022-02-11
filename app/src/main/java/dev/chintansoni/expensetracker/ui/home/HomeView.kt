@@ -2,17 +2,13 @@ package dev.chintansoni.expensetracker.ui.home
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +30,7 @@ import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.ChartIcon
 import dev.chintansoni.expensetracker.ui.theme.ListIcon
 import dev.chintansoni.expensetracker.ui.theme.PersonIcon
+import dev.chintansoni.expensetracker.ui.util.Fab
 import org.koin.androidx.compose.inject
 
 const val ROUTE_HOME = "home"
@@ -48,9 +45,12 @@ fun NavGraphBuilder.homeRoute() {
 @Composable
 fun HomeView() {
     val navController = rememberNavController()
+    val mainNavigator: MainNavigator by inject()
     Scaffold(
         floatingActionButton = {
-            Fab()
+            Fab(AddIcon) {
+                mainNavigator.navigate(MainRoute.TransactionDetailViewRoute(0L))
+            }
         },
         bottomBar = {
             BottomNavigation(navController)
@@ -77,7 +77,7 @@ fun BottomNavigation(
         val currentDestination = navBackStackEntry?.destination
         navItems.forEach { screen ->
             BottomNavigationItem(
-                icon = { Icon(screen.imageVector, contentDescription = null) },
+                icon = screen.icon,
                 label = { Text(screen.label) },
                 selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                 onClick = {
@@ -111,19 +111,7 @@ fun NavigationGraph(
     }
 }
 
-@Composable
-fun Fab() {
-    val mainNavigator: MainNavigator by inject()
-    val fabShape = RoundedCornerShape(50)
-    FloatingActionButton(
-        onClick = { mainNavigator.navigate(MainRoute.TransactionDetailViewRoute) },
-        shape = fabShape
-    ) {
-        Icon(AddIcon, "Add Expense Icon")
-    }
-}
-
-sealed class NavItem(val route: String, val label: String, val imageVector: ImageVector) {
+sealed class NavItem(val route: String, val label: String, val icon: @Composable () -> Unit) {
     object ChartNavItem : NavItem(ROUTE_CHART, "Chart", ChartIcon)
     object ListNavItem : NavItem(ROUTE_LIST, "List", ListIcon)
     object ProfileNavItem : NavItem(ROUTE_PROFILE, "Profile", PersonIcon)

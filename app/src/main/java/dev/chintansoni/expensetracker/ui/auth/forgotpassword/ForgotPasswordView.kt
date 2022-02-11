@@ -72,7 +72,6 @@ fun ForgotPasswordContent(
     onTryAgainClick: () -> Unit = {},
     sendLinkStatus: SendLinkStatus = SendLinkStatus.Default
 ) {
-
     Crossfade(targetState = sendLinkStatus) {
         when (it) {
             is SendLinkStatus.Success -> Success(onBackClick)

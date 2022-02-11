@@ -4,7 +4,7 @@ import dev.chintansoni.domain.repository.UserRepository
 import dev.chintansoni.preference.LoginPreferenceDataStore
 import kotlinx.coroutines.flow.Flow
 
-class UserRepositoryImpl(private val loginPreferenceDataStore: LoginPreferenceDataStore) :
+internal class UserRepositoryImpl(private val loginPreferenceDataStore: LoginPreferenceDataStore) :
     UserRepository {
 
     override fun isUserLoggedIn(): Flow<Boolean> = loginPreferenceDataStore.isUserLoggedIn
@@ -12,5 +12,4 @@ class UserRepositoryImpl(private val loginPreferenceDataStore: LoginPreferenceDa
     override suspend fun setUserLoggedIn(loggedIn: Boolean) {
         loginPreferenceDataStore.setUserLoggedIn(loggedIn)
     }
-
 }

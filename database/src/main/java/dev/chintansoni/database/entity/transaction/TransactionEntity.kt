@@ -3,17 +3,24 @@ package dev.chintansoni.database.entity.transaction
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(
+//    foreignKeys = [ForeignKey(
+//        entity = CategoryEntity::class,
+//        parentColumns = arrayOf("id"),
+//        childColumns = arrayOf("id"),
+//        onDelete = ForeignKey.NO_ACTION
+//    )]
+)
 data class TransactionEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Long,
     val amount: Float,
-    val note: String,
-    val category: String,
+    val note: String?,
+    val category: Int,
     val date: Long,
     val type: TransactionType,
     val createdDate: Long,
-    val updatedDate: Long,
-    val deletedDate: Long
+    val updatedDate: Long?,
+    val deletedDate: Long?
 )
 
 sealed class TransactionType(val type: Int) {

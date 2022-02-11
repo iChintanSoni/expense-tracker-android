@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.dp
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.theme.Typography
+import dev.chintansoni.expensetracker.ui.theme.emailIcon
+import dev.chintansoni.expensetracker.ui.theme.passwordIcon
+import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
@@ -97,23 +100,25 @@ fun SignInContent(
             style = Typography.h5,
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
             value = email,
-            singleLine = true,
             onValueChange = onEmailChange,
+            leadingIcon = emailIcon,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            label = { Text("Email") }
+            label = "Email",
+            errorText = ""
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
             value = password,
-            singleLine = true,
+            onValueChange = onPasswordChange,
+            leadingIcon = passwordIcon,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            onValueChange = onPasswordChange,
-            label = { Text("Password") }
+            label = "Password",
+            errorText = ""
         )
 
         Button(
@@ -132,7 +137,7 @@ fun SignInContent(
             Text("Forgot password?", modifier = Modifier.padding(4.dp))
         }
 
-        TextButton(
+        OutlinedButton(
             onClick = onSignUpClick, modifier = Modifier
                 .width(280.dp)
         ) {

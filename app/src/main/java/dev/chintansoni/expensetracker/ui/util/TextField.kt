@@ -2,7 +2,6 @@ package dev.chintansoni.expensetracker.ui.util
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -11,25 +10,32 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun TextFieldWithError(
+    modifier: Modifier = Modifier,
     value: String,
     label: String,
     leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit,
-    errorText: String
+    errorText: String,
+    singleLine: Boolean = true,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column {
         OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier,
             value = value,
             leadingIcon = leadingIcon,
             isError = errorText.isNotEmpty(),
             onValueChange = onValueChange,
+            singleLine = singleLine,
             label = { Text(label) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = keyboardOptions,
+            visualTransformation = visualTransformation
         )
         AnimatedVisibility(visible = errorText.isNotEmpty()) {
             Text(

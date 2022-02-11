@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,8 +39,7 @@ const val ROUTE_LIST = "List"
 fun ListView() {
     val listViewModel: ListViewModel by viewModel()
     val transactions: List<Transaction> by listViewModel.transactionsFlow.collectAsState(emptyList())
-
-    ListContent()
+    ListContent(transactions)
 }
 
 @Composable
@@ -59,7 +57,6 @@ fun NoTransactionsAvailable() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colors.surface)
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
@@ -75,8 +72,8 @@ fun NoTransactionsAvailable() {
 
 private fun generateDummyTransactions(): List<Transaction> {
     val transactionList = mutableListOf<Transaction>()
-    repeat(100) {
-        transactionList.add(Transaction())
+    repeat(1000) {
+        transactionList.add(Transaction.dummyInstance())
     }
     return transactionList
 }
@@ -116,11 +113,11 @@ fun TransactionList(transactionList: List<Transaction> = generateDummyTransactio
                         .padding(vertical = 8.dp)
                 ) {
                     Text(
-                        transaction.note,
+                        transaction.note ?: "",
                         style = Typography.subtitle1
                     )
                     Text(
-                        transaction.category,
+                        "${transaction.category}",
                         style = Typography.caption
                     )
                 }

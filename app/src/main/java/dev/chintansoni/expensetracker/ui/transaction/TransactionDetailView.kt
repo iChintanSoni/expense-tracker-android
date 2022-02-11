@@ -35,30 +35,38 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import dev.chintansoni.common.DateTime
+import dev.chintansoni.common.currentDateTime
+import dev.chintansoni.common.dateToDateTime
+import dev.chintansoni.common.getDay
+import dev.chintansoni.common.getMonth
+import dev.chintansoni.common.getYear
+import dev.chintansoni.common.toDateTime
+import dev.chintansoni.common.toInstant
 import dev.chintansoni.domain.model.Transaction
 import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.theme.BackIcon
-import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
+import dev.chintansoni.expensetracker.ui.theme.CategoryImage
 import dev.chintansoni.expensetracker.ui.theme.DropDownIcon
 import dev.chintansoni.expensetracker.ui.theme.EventIcon
 import dev.chintansoni.expensetracker.ui.theme.NoteIcon
+import dev.chintansoni.expensetracker.ui.theme.doneIcon
 import dev.chintansoni.expensetracker.ui.util.DrawableIcon
+import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
-import dev.chintansoni.expensetracker.ui.util.currentInstant
-import dev.chintansoni.expensetracker.ui.util.getDay
-import dev.chintansoni.expensetracker.ui.util.getMonth
-import dev.chintansoni.expensetracker.ui.util.getYear
-import dev.chintansoni.expensetracker.ui.util.toDateTime
-import dev.chintansoni.expensetracker.ui.util.toInstant
 import kotlinx.datetime.Instant
 import org.koin.androidx.compose.inject
 
 const val PARAM_TRANSACTION_DETAIL = "transactionId"
 const val ROUTE_TRANSACTION_DETAIL = "transactionDetail/{${PARAM_TRANSACTION_DETAIL}}"
 
-val arguments = listOf(navArgument(PARAM_TRANSACTION_DETAIL) { type = NavType.IntType })
+fun transactionDetailRoute(transactionId: Long): String {
+    return "transactionDetail/$transactionId"
+}
+
+val arguments = listOf(navArgument(PARAM_TRANSACTION_DETAIL) { type = NavType.LongType })
 
 fun NavBackStackEntry.argumentTransactionId(): Int {
     return arguments?.getInt(PARAM_TRANSACTION_DETAIL, 0) ?: 0
@@ -78,7 +86,9 @@ fun TransactionDetailView(transactionId: Int) {
     val transaction: Transaction? by transactionDetailViewModel.getTransactionFlow(transactionId)
         .collectAsState(initial = null)
 
-    var amount by remember { mutableStateOf("") }
+    var amount: String by remember {
+        mutableStateOf(transaction?.amount?.toString().orEmpty())
+    }
     var amountError by remember { mutableStateOf("") }
     val onAmountChange: (String) -> Unit = {
         amount = it
@@ -90,13 +100,17 @@ fun TransactionDetailView(transactionId: Int) {
         }
     }
 
-    var date: Instant by remember { mutableStateOf(currentInstant()) }
+    var date: Instant by remember {
+        mutableStateOf(transaction?.date.toInstant())
+    }
     val onDateChange: (Instant) -> Unit = { date = it }
 
-    var note: String by remember { mutableStateOf("") }
+    var note: String by remember {
+        mutableStateOf(transaction?.note.orEmpty())
+    }
     val onNoteChange: (String) -> Unit = { note = it }
 
-    var category: String by remember { mutableStateOf("") }
+    var category: String by remember { mutableStateOf(transaction?.category.toString()) }
     val categoryChange: (String) -> Unit = {
 
     }
@@ -106,6 +120,9 @@ fun TransactionDetailView(transactionId: Int) {
     }
 
     AddEditExpenseContent(
+        onBackClick = {
+            mainNavigator.navigate(MainRoute.GoBackViewRoute)
+        },
         amount = amount,
         onAmountChange = onAmountChange,
         amountError = amountError,
@@ -119,10 +136,11 @@ fun TransactionDetailView(transactionId: Int) {
 @Preview(showBackground = true)
 @Composable
 fun AddEditExpenseContent(
+    onBackClick: () -> Unit = {},
     amount: String = "",
     onAmountChange: (String) -> Unit = {},
     amountError: String = "",
-    date: Instant = currentInstant(),
+    date: DateTime = currentDateTime(),
     onDateChange: (Instant) -> Unit = {},
     note: String = "",
     onNoteChange: (String) -> Unit = {},
@@ -131,7 +149,15 @@ fun AddEditExpenseContent(
 ) {
     Scaffold(
         topBar = {
-            Toolbar()
+            Toolbar(
+                onBackClick = onBackClick,
+                title = "Expense Details"
+            )
+        },
+        floatingActionButton = {
+            Fab(doneIcon) {
+
+            }
         }
     ) {
         Column(Modifier.padding(16.dp)) {
@@ -159,9 +185,7 @@ fun AddEditExpenseContent(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = note,
-                leadingIcon = {
-                    Icon(NoteIcon, contentDescription = "Note Icon")
-                },
+                leadingIcon = NoteIcon,
                 maxLines = 5,
                 onValueChange = onNoteChange,
                 label = { Text("Notes") },
@@ -172,29 +196,28 @@ fun AddEditExpenseContent(
 
 @Preview(showBackground = true)
 @Composable
-fun Toolbar(mainNavigator: MainNavigator = MainNavigator()) {
+fun Toolbar(onBackClick: () -> Unit = {}, title: String = "Dummy Title") {
     TopAppBar(
         navigationIcon = {
             IconButton(
-                onClick = { mainNavigator.navigate(MainRoute.GoBackViewRoute) },
-            ) {
-                Icon(BackIcon, "Go Back Icon")
-            }
+                onClick = onBackClick,
+                content = BackIcon
+            )
         },
         title = {
-            Text(text = "Add Expense")
+            Text(text = title)
         }
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun RowScope.DatePicker(date: Instant = currentInstant(), onDateChange: (Instant) -> Unit = {}) {
+fun RowScope.DatePicker(date: DateTime = currentDateTime(), onDateChange: (Instant) -> Unit = {}) {
 
     val datePickerDialog = DatePickerDialog(
         LocalContext.current,
         { _, year, month, dayOfMonth ->
-            onDateChange(toInstant(day = dayOfMonth, month = month + 1, year = year))
+            onDateChange(dateToDateTime(day = dayOfMonth, month = month + 1, year = year))
         },
         date.getYear(),
         date.getMonth() - 1,
@@ -206,18 +229,12 @@ fun RowScope.DatePicker(date: Instant = currentInstant(), onDateChange: (Instant
             .fillMaxWidth()
             .weight(1f),
         value = date.toDateTime().date.toString(),
-        leadingIcon = {
-            Icon(EventIcon, contentDescription = "Localized description")
-        },
+        leadingIcon = EventIcon,
         trailingIcon = {
-            IconButton(onClick = {
-                datePickerDialog.show()
-            }) {
-                Icon(
-                    DropDownIcon,
-                    contentDescription = "Localized description"
-                )
-            }
+            IconButton(
+                onClick = { datePickerDialog.show() },
+                content = DropDownIcon
+            )
         },
         onValueChange = {},
         readOnly = true,
@@ -259,7 +276,7 @@ fun RowScope.DropdownMenu() {
             onValueChange = { },
             label = { Text("Category") },
             leadingIcon = {
-                Icon(imageVector = CategoryIcon, contentDescription = "Category Icon")
+                Icon(imageVector = CategoryImage, contentDescription = "Category Icon")
             },
             trailingIcon = {
                 ExposedDropdownMenuDefaults.TrailingIcon(

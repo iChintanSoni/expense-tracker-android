@@ -6,7 +6,7 @@ val coroutinesVersion: String by project
 
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
 }
 
 android {
@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":preference"))
     implementation(project(":database"))
     implementation(project(":domain"))
+    implementation(project(":common"))
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
@@ -49,4 +50,7 @@ dependencies {
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-android:$koinVersion")
+
+    androidTestImplementation("io.insert-koin:koin-test:$koinVersion")
+    androidTestImplementation("io.insert-koin:koin-android:$koinVersion")
 }
