@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.transaction
+package dev.chintansoni.expensetracker.ui.transactiondetail
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
@@ -10,22 +10,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.ExposedDropdownMenuDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -45,19 +37,20 @@ import dev.chintansoni.common.toDateTime
 import dev.chintansoni.common.toInstant
 import dev.chintansoni.domain.model.Transaction
 import dev.chintansoni.expensetracker.R
+import dev.chintansoni.expensetracker.ui.category.dropdown.CategoryView
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
-import dev.chintansoni.expensetracker.ui.theme.BackIcon
-import dev.chintansoni.expensetracker.ui.theme.CategoryImage
+import dev.chintansoni.expensetracker.ui.theme.DoneIcon
+import dev.chintansoni.expensetracker.ui.theme.DrawableIcon
 import dev.chintansoni.expensetracker.ui.theme.DropDownIcon
 import dev.chintansoni.expensetracker.ui.theme.EventIcon
 import dev.chintansoni.expensetracker.ui.theme.NoteIcon
-import dev.chintansoni.expensetracker.ui.theme.doneIcon
-import dev.chintansoni.expensetracker.ui.util.DrawableIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
+import dev.chintansoni.expensetracker.ui.util.MainToolbar
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import kotlinx.datetime.Instant
 import org.koin.androidx.compose.inject
+import org.koin.core.parameter.parametersOf
 
 const val PARAM_TRANSACTION_DETAIL = "transactionId"
 const val ROUTE_TRANSACTION_DETAIL = "transactionDetail/{${PARAM_TRANSACTION_DETAIL}}"
@@ -82,54 +75,43 @@ fun NavGraphBuilder.transactionDetailRoute() {
 fun TransactionDetailView(transactionId: Int) {
 
     val mainNavigator: MainNavigator by inject()
-    val transactionDetailViewModel: TransactionDetailViewModel by inject()
-    val transaction: Transaction? by transactionDetailViewModel.getTransactionFlow(transactionId)
-        .collectAsState(initial = null)
-
-    var amount: String by remember {
-        mutableStateOf(transaction?.amount?.toString().orEmpty())
+    val transactionDetailViewModel: TransactionDetailViewModel by inject {
+        parametersOf(transactionId)
     }
-    var amountError by remember { mutableStateOf("") }
+
+    val transaction: Transaction by transactionDetailViewModel.transaction
+    val amountError by transactionDetailViewModel.amountError
     val onAmountChange: (String) -> Unit = {
-        amount = it
-        amountError = try {
-            it.toDouble()
-            ""
-        } catch (exception: Exception) {
-            "Please enter a valid amount"
-        }
+        transactionDetailViewModel.setAmount(it)
+    }
+    val onDateChange: (DateTime) -> Unit = {
+        transactionDetailViewModel.setDate(it)
     }
 
-    var date: Instant by remember {
-        mutableStateOf(transaction?.date.toInstant())
+    val onNoteChange: (String) -> Unit = {
+        transactionDetailViewModel.setNote(it)
     }
-    val onDateChange: (Instant) -> Unit = { date = it }
 
-    var note: String by remember {
-        mutableStateOf(transaction?.note.orEmpty())
-    }
-    val onNoteChange: (String) -> Unit = { note = it }
-
-    var category: String by remember { mutableStateOf(transaction?.category.toString()) }
-    val categoryChange: (String) -> Unit = {
-
+    val selectedCategory: Int by remember { mutableStateOf(transaction.category) }
+    val categoryChange: (Int) -> Unit = {
+        transactionDetailViewModel.setCategory(it)
     }
 
     BackHandler {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute)
+        mainNavigator.navigate(MainRoute.GoBackViewRoute())
     }
 
     AddEditExpenseContent(
         onBackClick = {
-            mainNavigator.navigate(MainRoute.GoBackViewRoute)
+            mainNavigator.navigate(MainRoute.GoBackViewRoute())
         },
-        amount = amount,
+        transaction = transaction,
         onAmountChange = onAmountChange,
         amountError = amountError,
-        date = date,
         onDateChange = onDateChange,
-        note = note,
-        onNoteChange = onNoteChange
+        onNoteChange = onNoteChange,
+        selectedCategory = selectedCategory,
+        onCategorySelected = categoryChange
     )
 }
 
@@ -137,25 +119,23 @@ fun TransactionDetailView(transactionId: Int) {
 @Composable
 fun AddEditExpenseContent(
     onBackClick: () -> Unit = {},
-    amount: String = "",
+    transaction: Transaction = Transaction.newInstance(),
     onAmountChange: (String) -> Unit = {},
-    amountError: String = "",
-    date: DateTime = currentDateTime(),
+    amountError: String? = null,
     onDateChange: (Instant) -> Unit = {},
-    note: String = "",
     onNoteChange: (String) -> Unit = {},
-    category: String = "",
-    onCategoryChange: (String) -> Unit = {}
+    selectedCategory: Int = 0,
+    onCategorySelected: (Int) -> Unit = {}
 ) {
     Scaffold(
         topBar = {
-            Toolbar(
-                onBackClick = onBackClick,
-                title = "Expense Details"
+            MainToolbar(
+                title = "Expense Details",
+                onBackClick = onBackClick
             )
         },
         floatingActionButton = {
-            Fab(doneIcon) {
+            Fab(DoneIcon) {
 
             }
         }
@@ -166,25 +146,28 @@ fun AddEditExpenseContent(
                 label = "Amount",
                 leadingIcon = {
                     DrawableIcon(resId = R.drawable.currency_inr)
-                }, value = amount, errorText = amountError, onValueChange = onAmountChange
+                },
+                value = transaction.amount.toString(),
+                errorText = amountError,
+                onValueChange = onAmountChange
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(modifier = Modifier.fillMaxWidth()) {
 
-                DropdownMenu()
+                CategoryView(selectedCategory, onCategorySelected)
 
                 Spacer(modifier = Modifier.width(16.dp))
 
-                DatePicker(date = date, onDateChange = onDateChange)
+                DatePicker(date = transaction.date.toInstant(), onDateChange = onDateChange)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = note,
+                value = transaction.note ?: "",
                 leadingIcon = NoteIcon,
                 maxLines = 5,
                 onValueChange = onNoteChange,
@@ -192,22 +175,6 @@ fun AddEditExpenseContent(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Toolbar(onBackClick: () -> Unit = {}, title: String = "Dummy Title") {
-    TopAppBar(
-        navigationIcon = {
-            IconButton(
-                onClick = onBackClick,
-                content = BackIcon
-            )
-        },
-        title = {
-            Text(text = title)
-        }
-    )
 }
 
 @Preview(showBackground = true)
@@ -240,68 +207,4 @@ fun RowScope.DatePicker(date: DateTime = currentDateTime(), onDateChange: (Insta
         readOnly = true,
         label = { Text("Date") },
     )
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Preview(showBackground = true)
-@Composable
-fun RowScope.DropdownMenu() {
-    val options = listOf(
-        "Others",
-        "Food",
-        "Shopping",
-        "Entertainment",
-        "Travel",
-        "Home Rent",
-        "Pet Groom",
-        "Recharge"
-    )
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-        onExpandedChange = {
-            expanded = !expanded
-        }
-    ) {
-        OutlinedTextField(
-            readOnly = true,
-            value = selectedOptionText,
-            modifier = Modifier
-                .fillMaxWidth(),
-            onValueChange = { },
-            label = { Text("Category") },
-            leadingIcon = {
-                Icon(imageVector = CategoryImage, contentDescription = "Category Icon")
-            },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
-            }
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                    onClick = {
-                        selectedOptionText = selectionOption
-                        expanded = false
-                    }
-                ) {
-                    Text(
-                        text = selectionOption
-                    )
-                }
-            }
-        }
-    }
 }

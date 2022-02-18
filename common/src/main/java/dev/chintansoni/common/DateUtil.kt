@@ -26,26 +26,18 @@ fun dateToDateTime(day: Int, month: Int, year: Int): DateTime {
     ).toInstant(currentTimeZone())
 }
 
-fun currentDateTime(): DateTime {
-    return Clock.System.now()
-}
+fun currentDateTime(): DateTime = Clock.System.now()
 
-fun DateTime.getDay(): Int {
-    return this.toDateTime().date.dayOfMonth
-}
+fun currentDateTimeInMillis(): Long = currentDateTime().toEpochMilliseconds()
 
-fun DateTime.getMonth(): Int {
-    return this.toDateTime().date.monthNumber
-}
+fun DateTime.getDay(): Int = this.toDateTime().date.dayOfMonth
 
-fun DateTime.getYear(): Int {
-    return this.toDateTime().date.year
-}
+fun DateTime.getMonth(): Int = this.toDateTime().date.monthNumber
 
-fun Long?.toInstant(): Instant {
-    return if (this == null) {
-        Clock.System.now()
-    } else {
-        Instant.fromEpochMilliseconds(this)
-    }
+fun DateTime.getYear(): Int = this.toDateTime().date.year
+
+fun Long?.toInstant(): DateTime = if (this == null) {
+    currentDateTime()
+} else {
+    DateTime.fromEpochMilliseconds(this)
 }

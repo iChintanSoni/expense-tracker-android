@@ -11,16 +11,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
+@Preview(showBackground = true)
 @Composable
 fun TextFieldWithError(
     modifier: Modifier = Modifier,
-    value: String,
-    label: String,
+    value: String = "",
+    label: String = "",
     leadingIcon: @Composable (() -> Unit)? = null,
-    onValueChange: (String) -> Unit,
-    errorText: String,
+    onValueChange: (String) -> Unit = {},
+    errorText: String? = null,
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     visualTransformation: VisualTransformation = VisualTransformation.None
@@ -30,19 +33,21 @@ fun TextFieldWithError(
             modifier = modifier,
             value = value,
             leadingIcon = leadingIcon,
-            isError = errorText.isNotEmpty(),
+            isError = !errorText.isNullOrEmpty(),
             onValueChange = onValueChange,
             singleLine = singleLine,
             label = { Text(label) },
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation
         )
-        AnimatedVisibility(visible = errorText.isNotEmpty()) {
+        AnimatedVisibility(visible = !errorText.isNullOrEmpty()) {
             Text(
-                text = errorText,
+                modifier = Modifier.padding(8.dp),
+                text = errorText!!,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
-                modifier = Modifier.padding(16.dp)
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

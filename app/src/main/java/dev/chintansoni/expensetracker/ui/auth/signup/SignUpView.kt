@@ -52,10 +52,10 @@ fun SignUpView() {
     }
 
     val onSignUpClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute)
+        mainNavigator.navigate(MainRoute.GoBackViewRoute())
     }
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute)
+        mainNavigator.navigate(MainRoute.GoBackViewRoute())
     }
 
     SignUpContent(

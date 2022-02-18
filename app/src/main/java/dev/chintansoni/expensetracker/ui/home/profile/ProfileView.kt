@@ -13,7 +13,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,7 +22,6 @@ import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.theme.Typography
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
@@ -31,7 +29,7 @@ const val ROUTE_PROFILE = "profile"
 
 @Composable
 fun ProfileView() {
-    val coroutineScope = rememberCoroutineScope()
+
     val profileViewModel by viewModel<ProfileViewModel>()
     val mainNavigator: MainNavigator by inject()
 
@@ -55,8 +53,7 @@ fun ProfileView() {
 
         TextButton(
             onClick = {
-                coroutineScope.launch {
-                    profileViewModel.logout()
+                profileViewModel.logout {
                     mainNavigator.navigate(MainRoute.HomeToSignInViewRoute)
                 }
             }, modifier = Modifier

@@ -1,21 +1,26 @@
 package dev.chintansoni.expensetracker.ui.theme
 
+import androidx.annotation.DrawableRes
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Category
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PieChartOutline
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 
 private val ChartImage: ImageVector = Icons.Default.PieChartOutline
 val ChartIcon: @Composable () -> Unit =
@@ -50,11 +55,11 @@ val EventIcon: @Composable () -> Unit =
     { Icon(imageVector = EventImage, contentDescription = "Event Image") }
 
 val CategoryImage: ImageVector = Icons.Default.Category
-val categoryIcon: @Composable () -> Unit =
+val CategoryIcon: @Composable () -> Unit =
     { Icon(imageVector = CategoryImage, contentDescription = "Category Image") }
 
 val DoneImage: ImageVector = Icons.Default.Done
-val doneIcon: @Composable () -> Unit =
+val DoneIcon: @Composable () -> Unit =
     { Icon(imageVector = DoneImage, contentDescription = "Done Image") }
 
 val EmailImage: ImageVector = Icons.Default.Mail
@@ -64,3 +69,20 @@ val emailIcon: @Composable () -> Unit =
 val PasswordImage: ImageVector = Icons.Default.Password
 val passwordIcon: @Composable () -> Unit =
     { Icon(imageVector = PasswordImage, contentDescription = "Password Image") }
+
+val navigateNextImage: ImageVector = Icons.Default.NavigateNext
+val NavigateNextIcon: @Composable () -> Unit =
+    { Icon(imageVector = navigateNextImage, contentDescription = "Arrow Right Icon") }
+
+val settingImage: ImageVector = Icons.Default.Settings
+val SettingIcon: @Composable () -> Unit =
+    { Icon(imageVector = settingImage, contentDescription = "Setting Icon") }
+
+val deleteImage: ImageVector = Icons.Default.Delete
+val DeleteIcon: @Composable () -> Unit =
+    { Icon(imageVector = deleteImage, contentDescription = "Delete Icon") }
+
+@Composable
+fun DrawableIcon(@DrawableRes resId: Int, contentDescription: String? = null) {
+    Icon(painter = painterResource(id = resId), contentDescription = contentDescription)
+}

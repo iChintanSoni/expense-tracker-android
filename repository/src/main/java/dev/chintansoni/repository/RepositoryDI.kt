@@ -1,6 +1,7 @@
 package dev.chintansoni.repository
 
 import dev.chintansoni.database.databaseModule
+import dev.chintansoni.domain.repository.CategoryRepository
 import dev.chintansoni.domain.repository.TransactionRepository
 import dev.chintansoni.domain.repository.UserRepository
 import dev.chintansoni.preference.preferenceModule
@@ -13,5 +14,9 @@ val repositoryModules = module {
 
     single<TransactionRepository> {
         TransactionRepositoryImpl(get())
+    }
+
+    single<CategoryRepository> {
+        CategoryRepositoryImpl(get())
     }
 }.plus(listOf(databaseModule, preferenceModule))

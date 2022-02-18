@@ -3,7 +3,9 @@ package dev.chintansoni.database.entity.transaction
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -13,12 +15,22 @@ interface TransactionDao {
     fun getAllFlow(): Flow<List<TransactionEntity>>
 
     @Query("SELECT * FROM TransactionEntity WHERE id = :id LIMIT 1")
-    fun getByIdFlow(id: Int): Flow<TransactionEntity?>
+    fun getByIdFlow(id: Long): Flow<TransactionEntity?>
+
+    @Query("SELECT * FROM TransactionEntity WHERE category = :categoryId")
+    suspend fun getAllByCategory(categoryId: Int): List<TransactionEntity>
 
     @Insert
     suspend fun insertTransaction(transactionEntity: TransactionEntity): Long
 
-    @Update
+    @Transaction
+    suspend fun updateTransactions(transactions: List<TransactionEntity>): List<Int> {
+        return transactions.map { transaction ->
+            updateTransaction(transaction)
+        }
+    }
+
+    @Update(onConflict = REPLACE)
     suspend fun updateTransaction(transactionEntity: TransactionEntity): Int
 
     @Delete

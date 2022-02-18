@@ -14,7 +14,6 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,7 +26,6 @@ import dev.chintansoni.expensetracker.ui.theme.Typography
 import dev.chintansoni.expensetracker.ui.theme.emailIcon
 import dev.chintansoni.expensetracker.ui.theme.passwordIcon
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
@@ -35,8 +33,6 @@ const val ROUTE_SIGN_IN = "SignIn"
 
 @Composable
 fun SignInView() {
-
-    val coroutineScope = rememberCoroutineScope()
     val signInViewModel by viewModel<SignInViewModel>()
     val mainNavigator: MainNavigator by inject()
 
@@ -50,9 +46,8 @@ fun SignInView() {
         signInViewModel.setPassword(it)
     }
 
-    val onSignInClick: () -> Unit = {
-        coroutineScope.launch {
-            signInViewModel.setLoginPreference()
+    val onSignInClick: (email: String, password: String) -> Unit = { _email, _password ->
+        signInViewModel.onSignInClick(email = _email, password = _password) {
             mainNavigator.navigate(MainRoute.SignInToHomeViewRoute)
         }
     }
@@ -83,7 +78,7 @@ fun SignInContent(
     onEmailChange: (String) -> Unit = {},
     password: String = "",
     onPasswordChange: (String) -> Unit = {},
-    onSignInClick: () -> Unit = {},
+    onSignInClick: (String, String) -> Unit = { _, _ -> },
     onForgotPasswordClick: () -> Unit = {},
     onSignUpClick: () -> Unit = {},
 ) {
@@ -122,7 +117,7 @@ fun SignInContent(
         )
 
         Button(
-            onClick = onSignInClick, modifier = Modifier
+            onClick = { onSignInClick(email, password) }, modifier = Modifier
                 .padding(12.dp)
                 .width(280.dp)
         ) {

@@ -19,7 +19,7 @@ class TransactionRepositoryImpl(private val transactionDao: TransactionDao) :
             }
         }
 
-    override fun getTransactionByIdFlow(id: Int): Flow<Transaction?> =
+    override fun getTransactionByIdFlow(id: Long): Flow<Transaction?> =
         transactionDao.getByIdFlow(id).distinctUntilChanged().map { transactionEntity ->
             transactionEntity?.toDomainModel()
         }
@@ -32,8 +32,16 @@ class TransactionRepositoryImpl(private val transactionDao: TransactionDao) :
         return transactionDao.updateTransaction(transaction.toDBModel())
     }
 
+    override suspend fun updateTransactions(transactions: List<Transaction>): List<Int> {
+        return transactionDao.updateTransactions(transactions.map { it.toDBModel() })
+    }
+
     override suspend fun deleteTransaction(transaction: Transaction): Int {
         return transactionDao.deleteTransaction(transaction.toDBModel())
+    }
+
+    override suspend fun getAllTransactionsByCategory(categoryId: Int): List<Transaction> {
+        return transactionDao.getAllByCategory(categoryId).map { it.toDomainModel() }
     }
 
     override suspend fun clear() {

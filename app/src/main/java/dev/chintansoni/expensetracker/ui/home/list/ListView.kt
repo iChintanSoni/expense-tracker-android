@@ -28,7 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.chintansoni.domain.model.Transaction
-import dev.chintansoni.domain.model.TransactionType
+import dev.chintansoni.domain.model.generateDummyTransactions
 import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.theme.Typography
 import org.koin.androidx.compose.viewModel
@@ -68,14 +68,6 @@ fun NoTransactionsAvailable() {
             fontSize = 25.sp
         )
     }
-}
-
-private fun generateDummyTransactions(): List<Transaction> {
-    val transactionList = mutableListOf<Transaction>()
-    repeat(1000) {
-        transactionList.add(Transaction.dummyInstance())
-    }
-    return transactionList
 }
 
 @Preview(showBackground = true)
@@ -126,8 +118,7 @@ fun TransactionList(transactionList: List<Transaction> = generateDummyTransactio
                     style = Typography.overline,
                     modifier = Modifier
                         .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.CenterVertically),
-                    color = if (transaction.type == TransactionType.Debit) Color.Red else Color.Green
+                        .align(Alignment.CenterVertically)
                 )
             }
             Divider()

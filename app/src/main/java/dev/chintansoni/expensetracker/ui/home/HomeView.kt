@@ -2,13 +2,17 @@ package dev.chintansoni.expensetracker.ui.home
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +34,7 @@ import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.ChartIcon
 import dev.chintansoni.expensetracker.ui.theme.ListIcon
 import dev.chintansoni.expensetracker.ui.theme.PersonIcon
+import dev.chintansoni.expensetracker.ui.theme.SettingIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
 import org.koin.androidx.compose.inject
 
@@ -41,16 +46,38 @@ fun NavGraphBuilder.homeRoute() {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun HomeView() {
-    val navController = rememberNavController()
     val mainNavigator: MainNavigator by inject()
+    val onSettingClick: () -> Unit = {
+        mainNavigator.navigate(MainRoute.SettingViewRoute)
+    }
+    val onAddClick: () -> Unit = {
+        mainNavigator.navigate(MainRoute.TransactionDetailViewRoute(0))
+    }
+    HomeContent(onSettingClick = onSettingClick, onAddClick)
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeContent(
+    onSettingClick: () -> Unit = {},
+    onAddClick: () -> Unit = {}
+) {
+    val navController = rememberNavController()
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "Expense Tracker") },
+                actions = {
+                    IconButton(onClick = onSettingClick) {
+                        SettingIcon()
+                    }
+                }
+            )
+        },
         floatingActionButton = {
-            Fab(AddIcon) {
-                mainNavigator.navigate(MainRoute.TransactionDetailViewRoute(0L))
-            }
+            Fab(AddIcon, onClick = onAddClick)
         },
         bottomBar = {
             BottomNavigation(navController)
@@ -72,7 +99,13 @@ fun BottomNavigation(
         NavItem.ListNavItem,
         NavItem.ProfileNavItem
     )
-    BottomNavigation {
+    BottomNavigation(
+        modifier = Modifier
+            .graphicsLayer {
+                shape = RoundedCornerShape(topStartPercent = 50, topEndPercent = 50)
+                clip = true
+            }
+    ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
         navItems.forEach { screen ->

@@ -1,12 +1,13 @@
 package dev.chintansoni.domain.model
 
+import dev.chintansoni.common.currentDateTimeInMillis
+
 data class Transaction(
     val id: Long,
     val amount: Float,
     val note: String?,
     val category: Int,
     val date: Long,
-    val type: TransactionType,
     val createdDate: Long,
     val updatedDate: Long?,
     val deletedDate: Long?
@@ -17,9 +18,8 @@ data class Transaction(
             amount = (0..100).random().toFloat(),
             note = "Dummy Note",
             category = 0,
-            date = System.currentTimeMillis(),
-            type = TransactionType.Debit,
-            createdDate = System.currentTimeMillis(),
+            date = currentDateTimeInMillis(),
+            createdDate = currentDateTimeInMillis(),
             updatedDate = null,
             deletedDate = null
         )
@@ -29,16 +29,10 @@ data class Transaction(
             amount = 0f,
             note = null,
             category = 0,
-            date = System.currentTimeMillis(),
-            type = TransactionType.Debit,
-            createdDate = System.currentTimeMillis(),
+            date = currentDateTimeInMillis(),
+            createdDate = currentDateTimeInMillis(),
             updatedDate = null,
             deletedDate = null
         )
     }
-}
-
-sealed class TransactionType(val type: Int) {
-    object Credit : TransactionType(1)
-    object Debit : TransactionType(2)
 }

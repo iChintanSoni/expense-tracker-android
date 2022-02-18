@@ -4,9 +4,12 @@ import androidx.navigation.NavOptions
 import dev.chintansoni.expensetracker.ui.auth.forgotpassword.ROUTE_FORGOT_PASSWORD
 import dev.chintansoni.expensetracker.ui.auth.signin.ROUTE_SIGN_IN
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
+import dev.chintansoni.expensetracker.ui.category.list.ROUTE_CATEGORIES
+import dev.chintansoni.expensetracker.ui.category.manage.manageCategoryRoute
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
+import dev.chintansoni.expensetracker.ui.setting.ROUTE_SETTING
 import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
-import dev.chintansoni.expensetracker.ui.transaction.transactionDetailRoute
+import dev.chintansoni.expensetracker.ui.transactiondetail.transactionDetailRoute
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,8 +50,15 @@ sealed class MainRoute(
     object HomeToSignInViewRoute :
         MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_HOME, true).build())
 
-    object GoBackViewRoute : MainRoute(ROUTE_GO_BACK)
+    class GoBackViewRoute : MainRoute(ROUTE_GO_BACK)
 
     data class TransactionDetailViewRoute(val transactionId: Long) :
         MainRoute(transactionDetailRoute(transactionId))
+
+    object SettingViewRoute : MainRoute(ROUTE_SETTING)
+
+    object CategoriesViewRoute : MainRoute(ROUTE_CATEGORIES)
+
+    data class ManageCategoryViewRoute(val categoryId: Int) :
+        MainRoute(manageCategoryRoute(categoryId))
 }

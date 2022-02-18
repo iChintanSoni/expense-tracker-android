@@ -45,7 +45,7 @@ fun ForgotPasswordScreen() {
     }
 
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute)
+        mainNavigator.navigate(MainRoute.GoBackViewRoute())
     }
 
     val onTryAgainClick: () -> Unit = {

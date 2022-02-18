@@ -16,12 +16,15 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.auth.authRoute
+import dev.chintansoni.expensetracker.ui.category.list.categoriesRoute
+import dev.chintansoni.expensetracker.ui.category.manage.manageCategoryRoute
 import dev.chintansoni.expensetracker.ui.home.homeRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.setting.settingRoute
 import dev.chintansoni.expensetracker.ui.splash.splashRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
-import dev.chintansoni.expensetracker.ui.transaction.transactionDetailRoute
+import dev.chintansoni.expensetracker.ui.transactiondetail.transactionDetailRoute
 import org.koin.androidx.compose.inject
 
 class ExpenseTrackerActivity : ComponentActivity() {
@@ -47,9 +50,10 @@ fun App() {
     val navController = rememberNavController()
     val mainNavigator: MainNavigator by inject()
     val viewRoute: MainRoute? by mainNavigator.viewRouteStateFlow.collectAsState()
+
     LaunchedEffect(key1 = viewRoute) {
         viewRoute?.let {
-            if (it == MainRoute.GoBackViewRoute) {
+            if (it is MainRoute.GoBackViewRoute) {
                 navController.navigateUp()
             } else {
                 navController.navigate(it.route, it.navOptions)
@@ -65,6 +69,9 @@ fun App() {
         authRoute()
         homeRoute()
         transactionDetailRoute()
+        settingRoute()
+        categoriesRoute()
+        manageCategoryRoute()
     }
 }
 

@@ -8,7 +8,10 @@ import org.koin.dsl.module
 
 val authModule = module {
     viewModel {
-        SignInViewModel(get())
+        SignInViewModel(
+            userRepository = get(),
+            categoryRepository = get()
+        )
     }
     viewModel {
         SignUpViewModel()
