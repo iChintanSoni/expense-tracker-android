@@ -47,7 +47,6 @@ class CategoryRepositoryImpl(private val categoryDao: CategoryDao) :
     }
 
     override suspend fun upsertCategory(category: Category) {
-        println("Repository: $category")
         categoryDao.upsertCategory(category.toDBModel())
     }
 

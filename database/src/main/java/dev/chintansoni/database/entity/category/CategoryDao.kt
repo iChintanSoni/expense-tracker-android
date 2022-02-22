@@ -34,12 +34,9 @@ interface CategoryDao {
 
     @Transaction
     suspend fun upsertCategory(categoryEntity: CategoryEntity) {
-        println("Dao: $categoryEntity")
         val id: Long = insertCategory(categoryEntity)
-        println("Is Inserted: $id")
         if (id == -1L) {
-            val count = updateCategory(categoryEntity)
-            println("Is Updated: $count")
+            updateCategory(categoryEntity)
         }
     }
 
