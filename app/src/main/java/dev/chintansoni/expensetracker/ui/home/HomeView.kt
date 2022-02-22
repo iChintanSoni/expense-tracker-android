@@ -28,32 +28,30 @@ import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.home.chart.ROUTE_CHART
 import dev.chintansoni.expensetracker.ui.home.list.ROUTE_LIST
 import dev.chintansoni.expensetracker.ui.home.profile.ROUTE_PROFILE
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.ChartIcon
 import dev.chintansoni.expensetracker.ui.theme.ListIcon
 import dev.chintansoni.expensetracker.ui.theme.PersonIcon
 import dev.chintansoni.expensetracker.ui.theme.SettingIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
-import org.koin.androidx.compose.inject
 
 const val ROUTE_HOME = "home"
 
-fun NavGraphBuilder.homeRoute() {
+fun NavGraphBuilder.homeRoute(navController: NavController) {
     composable(ROUTE_HOME) {
-        HomeView()
+        HomeView(navController)
     }
 }
 
 @Composable
-fun HomeView() {
-    val mainNavigator: MainNavigator by inject()
+fun HomeView(navController: NavController = rememberNavController()) {
     val onSettingClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.SettingViewRoute)
+        navController.navigate(MainRoute.SettingViewRoute)
     }
     val onAddClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.TransactionDetailViewRoute(0))
+        navController.navigate(MainRoute.TransactionDetailViewRoute(0))
     }
     HomeContent(onSettingClick = onSettingClick, onAddClick)
 }

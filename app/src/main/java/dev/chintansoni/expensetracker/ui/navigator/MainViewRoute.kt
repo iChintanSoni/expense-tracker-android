@@ -5,26 +5,11 @@ import dev.chintansoni.expensetracker.ui.auth.forgotpassword.ROUTE_FORGOT_PASSWO
 import dev.chintansoni.expensetracker.ui.auth.signin.ROUTE_SIGN_IN
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
 import dev.chintansoni.expensetracker.ui.category.list.ROUTE_CATEGORIES
-import dev.chintansoni.expensetracker.ui.category.manage.manageCategoryRoute
+import dev.chintansoni.expensetracker.ui.category.manage.buildManageCategoryRoute
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
 import dev.chintansoni.expensetracker.ui.setting.ROUTE_SETTING
 import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
-import dev.chintansoni.expensetracker.ui.transactiondetail.transactionDetailRoute
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-
-class MainNavigator : Navigator<MainRoute> {
-
-    private val _viewRouteStateFlow: MutableStateFlow<MainRoute?> = MutableStateFlow(null)
-
-    override val viewRouteStateFlow: StateFlow<MainRoute?>
-        get() = _viewRouteStateFlow.asStateFlow()
-
-    override fun navigate(viewRoute: MainRoute?) {
-        _viewRouteStateFlow.value = viewRoute
-    }
-}
+import dev.chintansoni.expensetracker.ui.transaction.transactiondetail.transactionDetailRoute
 
 sealed class MainRoute(
     override val route: String,
@@ -50,8 +35,6 @@ sealed class MainRoute(
     object HomeToSignInViewRoute :
         MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_HOME, true).build())
 
-    class GoBackViewRoute : MainRoute(ROUTE_GO_BACK)
-
     data class TransactionDetailViewRoute(val transactionId: Long) :
         MainRoute(transactionDetailRoute(transactionId))
 
@@ -60,5 +43,5 @@ sealed class MainRoute(
     object CategoriesViewRoute : MainRoute(ROUTE_CATEGORIES)
 
     data class ManageCategoryViewRoute(val categoryId: Int) :
-        MainRoute(manageCategoryRoute(categoryId))
+        MainRoute(buildManageCategoryRoute(categoryId))
 }

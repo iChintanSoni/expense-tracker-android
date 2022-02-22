@@ -14,33 +14,34 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
+import androidx.navigation.compose.rememberNavController
+import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
 import dev.chintansoni.expensetracker.ui.theme.NavigateNextIcon
 import dev.chintansoni.expensetracker.ui.util.MainToolbar
-import org.koin.androidx.compose.inject
 
 const val ROUTE_SETTING = "setting"
 
-fun NavGraphBuilder.settingRoute() {
+fun NavGraphBuilder.settingRoute(navController: NavController) {
     composable(ROUTE_SETTING) {
-        SettingView()
+        SettingView(navController)
     }
 }
 
 @Composable
-fun SettingView() {
-    val mainNavigator: MainNavigator by inject()
+fun SettingView(navController: NavController = rememberNavController()) {
     val onSettingOptionClick: (SettingOption) -> Unit = {
         when (it) {
-            is Categories -> mainNavigator.navigate(MainRoute.CategoriesViewRoute)
+            is Categories -> navController.navigate(MainRoute.CategoriesViewRoute)
         }
     }
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
     BackHandler { onBackClick() }
     SettingContent(onSettingOptionClick = onSettingOptionClick, onBackClick = onBackClick)

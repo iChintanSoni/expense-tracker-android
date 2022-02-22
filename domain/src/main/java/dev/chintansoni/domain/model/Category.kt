@@ -10,7 +10,7 @@ data class Category(
     /**
      * returns true if id is non-zero, else false
      */
-    fun doesExist(): Boolean = id != 0
+    fun canBeDeleted(): Boolean = id != 0 && canBeDeleted
 
     companion object {
 

@@ -83,6 +83,5 @@ val DeleteIcon: @Composable () -> Unit =
     { Icon(imageVector = deleteImage, contentDescription = "Delete Icon") }
 
 @Composable
-fun DrawableIcon(@DrawableRes resId: Int, contentDescription: String? = null) {
+fun DrawableIcon(@DrawableRes resId: Int, contentDescription: String? = null) =
     Icon(painter = painterResource(id = resId), contentDescription = contentDescription)
-}

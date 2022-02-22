@@ -27,49 +27,53 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import dev.chintansoni.domain.model.Category
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.BackIcon
 import dev.chintansoni.expensetracker.ui.theme.DeleteIcon
 import dev.chintansoni.expensetracker.ui.theme.DoneIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
-import org.koin.androidx.compose.inject
+import org.koin.androidx.compose.viewModel
 import org.koin.core.parameter.parametersOf
 
 const val PARAM_CATEGORY_ID = "categoryId"
 const val ROUTE_MANAGE_CATEGORY = "manage-category/{${PARAM_CATEGORY_ID}}"
 
-fun manageCategoryRoute(categoryId: Int): String {
+fun buildManageCategoryRoute(categoryId: Int): String {
     return "manage-category/$categoryId"
 }
 
-val arguments = listOf(navArgument(PARAM_CATEGORY_ID) { type = NavType.IntType })
+private val arguments = listOf(navArgument(PARAM_CATEGORY_ID) { type = NavType.IntType })
 
 fun NavBackStackEntry.argumentCategoryId(): Int {
     return arguments?.getInt(PARAM_CATEGORY_ID, 0) ?: 0
 }
 
-fun NavGraphBuilder.manageCategoryRoute() {
+fun NavGraphBuilder.manageCategoryRoute(navController: NavController) {
     composable(ROUTE_MANAGE_CATEGORY, arguments) {
-        ManageCategoryView(categoryId = it.argumentCategoryId())
+        ManageCategoryView(navController, categoryId = it.argumentCategoryId())
     }
 }
 
 @Composable
-fun ManageCategoryView(categoryId: Int) {
-    val mainNavigator: MainNavigator by inject()
+fun ManageCategoryView(
+    navController: NavController = rememberNavController(),
+    categoryId: Int = 0
+) {
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
     BackHandler { onBackClick() }
 
-    val manageCategoryViewModel: ManageCategoryViewModel by inject {
+    val manageCategoryViewModel: ManageCategoryViewModel by viewModel {
         parametersOf(categoryId)
     }
     val category by remember { manageCategoryViewModel.category }
@@ -124,7 +128,7 @@ fun ManageCategoryContent(
                     Text(text = category.name)
                 },
                 actions = {
-                    if (category.doesExist()) {
+                    if (category.canBeDeleted()) {
                         IconButton(onClick = { shouldShowConfirmDialog = true }) {
                             DeleteIcon()
                         }

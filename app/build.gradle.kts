@@ -66,6 +66,7 @@ dependencies {
     implementation(project(":repository"))
     implementation(project(":domain"))
     implementation(project(":common"))
+    implementation("com.google.android.material:material:1.5.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
@@ -81,6 +82,7 @@ dependencies {
     // Koin for Dependency Injection
     implementation("io.insert-koin:koin-android:$koinVersion")
     implementation("io.insert-koin:koin-androidx-compose:$koinVersion")
+    implementation("io.insert-koin:koin-androidx-navigation:$koinVersion")
     testImplementation("io.insert-koin:koin-test:$koinVersion")
 
     implementation("androidx.core:core-splashscreen:1.0.0-beta01")

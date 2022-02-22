@@ -19,41 +19,43 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.domain.model.Category
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
+import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.NavigateNextIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.MainToolbar
-import org.koin.androidx.compose.inject
+import org.koin.androidx.compose.viewModel
 
 const val ROUTE_CATEGORIES = "categories"
 
-fun NavGraphBuilder.categoriesRoute() {
+fun NavGraphBuilder.categoriesRoute(navController: NavController) {
     composable(ROUTE_CATEGORIES) {
-        CategoriesView()
+        CategoriesView(navController)
     }
 }
 
 @Composable
-fun CategoriesView() {
+fun CategoriesView(navController: NavController = rememberNavController()) {
 
-    val mainNavigator: MainNavigator by inject()
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
     BackHandler { onBackClick() }
 
-    val manageCategoriesViewModel: CategoriesViewModel by inject()
+    val manageCategoriesViewModel: CategoriesViewModel by viewModel()
     val categories by remember { manageCategoriesViewModel.categories }
     val onCategoryClick: (Category) -> Unit = {
-        mainNavigator.navigate(MainRoute.ManageCategoryViewRoute(it.id))
+        navController.navigate(MainRoute.ManageCategoryViewRoute(it.id))
     }
     val onAddClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.ManageCategoryViewRoute(0))
+        navController.navigate(MainRoute.ManageCategoryViewRoute(0))
     }
 
     CategoriesContent(

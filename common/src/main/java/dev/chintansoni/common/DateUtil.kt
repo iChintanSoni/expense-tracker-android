@@ -36,7 +36,7 @@ fun DateTime.getMonth(): Int = this.toDateTime().date.monthNumber
 
 fun DateTime.getYear(): Int = this.toDateTime().date.year
 
-fun Long?.toInstant(): DateTime = if (this == null) {
+fun Long?.toDateTime(): DateTime = if (this == null) {
     currentDateTime()
 } else {
     DateTime.fromEpochMilliseconds(this)

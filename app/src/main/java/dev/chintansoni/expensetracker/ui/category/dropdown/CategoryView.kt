@@ -17,21 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import dev.chintansoni.domain.model.Category
 import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
-import org.koin.androidx.compose.inject
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RowScope.CategoryView(
     selectedCategory: Int = 0,
-    onCategorySelected: (Int) -> Unit = {}
+    onCategorySelected: (Int) -> Unit = {},
+    categories: List<Category>
 ) {
     var expanded by remember { mutableStateOf(false) }
     val onExpandChange: (Boolean) -> Unit = {
         expanded = it
-    }
-    val categoryViewModel: CategoryViewModel by inject()
-    val categories by remember {
-        categoryViewModel.categories
     }
     CategoryContent(
         expand = expanded,
@@ -52,6 +48,17 @@ fun RowScope.CategoryContent(
     onCategorySelected: (Int) -> Unit = {},
     categories: List<Category> = emptyList()
 ) {
+
+    val fetchCategoryText: (Int, List<Category>) -> String = { selected, list ->
+        if (list.isNotEmpty()) {
+            if (selected == 0) {
+                list.first().name
+            } else {
+                list.find { it.id == selected }?.name ?: ""
+            }
+        } else ""
+    }
+
     ExposedDropdownMenuBox(
         expanded = expand,
         modifier = Modifier
@@ -60,10 +67,11 @@ fun RowScope.CategoryContent(
         onExpandedChange = onExpandChange
     ) {
         OutlinedTextField(
-            readOnly = true,
-            value = if (categories.isNotEmpty()) categories[selectedCategory].name else "",
             modifier = Modifier
                 .fillMaxWidth(),
+            readOnly = true,
+            value = fetchCategoryText(selectedCategory, categories),
+            singleLine = true,
             onValueChange = { },
             label = { Text("Category") },
             leadingIcon = CategoryIcon,
@@ -71,7 +79,7 @@ fun RowScope.CategoryContent(
                 ExposedDropdownMenuDefaults.TrailingIcon(
                     expanded = expand
                 )
-            }
+            },
         )
         ExposedDropdownMenu(
             expanded = expand,

@@ -18,20 +18,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.R
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
-import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_PROFILE = "profile"
 
 @Composable
-fun ProfileView() {
+fun ProfileView(navController: NavController = rememberNavController()) {
 
     val profileViewModel by viewModel<ProfileViewModel>()
-    val mainNavigator: MainNavigator by inject()
 
     Column(
         modifier = Modifier
@@ -54,7 +54,7 @@ fun ProfileView() {
         TextButton(
             onClick = {
                 profileViewModel.logout {
-                    mainNavigator.navigate(MainRoute.HomeToSignInViewRoute)
+                    navController.navigate(MainRoute.HomeToSignInViewRoute)
                 }
             }, modifier = Modifier
                 .padding(12.dp)

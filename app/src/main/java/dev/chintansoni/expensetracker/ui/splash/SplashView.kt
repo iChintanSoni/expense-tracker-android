@@ -12,32 +12,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.R
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
-import org.koin.androidx.compose.inject
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_SPLASH = "SplashView"
 
-fun NavGraphBuilder.splashRoute() {
+fun NavGraphBuilder.splashRoute(navController: NavController) {
     composable(ROUTE_SPLASH) {
-        SplashView()
+        SplashView(navController)
     }
 }
 
 @Composable
-fun SplashView() {
-    val mainNavigator: MainNavigator by inject()
+fun SplashView(navController: NavController = rememberNavController()) {
     val splashViewModel by viewModel<SplashViewModel>()
     LaunchedEffect(key1 = true) {
         splashViewModel.isUserLoggedInFlow.collect {
             if (it) {
-                mainNavigator.navigate(MainRoute.SplashToHomeViewRoute)
+                navController.navigate(MainRoute.SplashToHomeViewRoute)
             } else {
-                mainNavigator.navigate(MainRoute.SplashToSignInViewRoute)
+                navController.navigate(MainRoute.SplashToSignInViewRoute)
             }
         }
     }

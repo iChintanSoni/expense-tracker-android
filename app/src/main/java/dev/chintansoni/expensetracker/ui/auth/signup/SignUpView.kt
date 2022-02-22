@@ -20,18 +20,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
-import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_SIGN_UP = "SignUp"
 
 @Composable
-fun SignUpView() {
+fun SignUpView(navController: NavController = rememberNavController()) {
+
     val signUpViewModel: SignUpViewModel by viewModel()
-    val mainNavigator: MainNavigator by inject()
 
     val firstName: String by signUpViewModel.firstNameSF.collectAsState()
     val onFirstNameChange: (String) -> Unit = {
@@ -52,10 +53,10 @@ fun SignUpView() {
     }
 
     val onSignUpClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
 
     SignUpContent(

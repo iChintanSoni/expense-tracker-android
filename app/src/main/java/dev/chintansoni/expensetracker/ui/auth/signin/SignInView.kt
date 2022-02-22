@@ -20,21 +20,22 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
 import dev.chintansoni.expensetracker.ui.theme.emailIcon
 import dev.chintansoni.expensetracker.ui.theme.passwordIcon
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
-import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_SIGN_IN = "SignIn"
 
 @Composable
-fun SignInView() {
+fun SignInView(navController: NavController = rememberNavController()) {
+
     val signInViewModel by viewModel<SignInViewModel>()
-    val mainNavigator: MainNavigator by inject()
 
     val email: String by signInViewModel.emailSF.collectAsState()
     val onEmailChange: (String) -> Unit = {
@@ -48,16 +49,16 @@ fun SignInView() {
 
     val onSignInClick: (email: String, password: String) -> Unit = { _email, _password ->
         signInViewModel.onSignInClick(email = _email, password = _password) {
-            mainNavigator.navigate(MainRoute.SignInToHomeViewRoute)
+            navController.navigate(MainRoute.SignInToHomeViewRoute)
         }
     }
 
     val onForgotPasswordClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.ForgotPasswordViewRoute)
+        navController.navigate(MainRoute.ForgotPasswordViewRoute)
     }
 
     val onSignUpClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.SignUpViewRoute)
+        navController.navigate(MainRoute.SignUpViewRoute)
     }
 
     SignInContent(

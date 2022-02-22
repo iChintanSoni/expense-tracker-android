@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.home.list
+package dev.chintansoni.expensetracker.ui.transaction.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,14 +36,16 @@ import org.koin.androidx.compose.viewModel
 const val ROUTE_LIST = "List"
 
 @Composable
-fun ListView() {
-    val listViewModel: ListViewModel by viewModel()
-    val transactions: List<Transaction> by listViewModel.transactionsFlow.collectAsState(emptyList())
-    ListContent(transactions)
+fun TransactionsView() {
+    val transactionsViewModel: TransactionsViewModel by viewModel()
+    val transactions: List<Transaction> by transactionsViewModel.transactionsFlow.collectAsState(
+        emptyList()
+    )
+    TransactionsContent(transactions)
 }
 
 @Composable
-fun ListContent(transactions: List<Transaction> = generateDummyTransactions()) {
+fun TransactionsContent(transactions: List<Transaction> = generateDummyTransactions()) {
     if (transactions.isEmpty()) {
         NoTransactionsAvailable()
     } else {
@@ -74,55 +76,58 @@ fun NoTransactionsAvailable() {
 @Composable
 fun TransactionList(transactionList: List<Transaction> = generateDummyTransactions()) {
     LazyColumn {
-        itemsIndexed(
-            items = transactionList
-        ) { index, transaction ->
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(36.dp)
-                            .background(Color.Gray)
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_category),
-                            contentDescription = "",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier
-                        .weight(1f, true)
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text(
-                        transaction.note ?: "",
-                        style = Typography.subtitle1
-                    )
-                    Text(
-                        "${transaction.category}",
-                        style = Typography.caption
-                    )
-                }
-                Text(
-                    text = "\u20B9 " + transaction.amount,
-                    style = Typography.overline,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .align(Alignment.CenterVertically)
-                )
-            }
+        itemsIndexed(transactionList) { index, transaction ->
+            TransactionItem(transaction)
             if (index < transactionList.lastIndex)
                 Divider()
         }
+    }
+}
+
+@Composable
+fun TransactionItem(transaction: Transaction = Transaction.newInstance()) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .size(36.dp)
+                    .background(Color.Gray)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_category),
+                    contentDescription = "",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f, true)
+                .padding(vertical = 8.dp)
+        ) {
+            Text(
+                transaction.note ?: "",
+                style = Typography.subtitle1
+            )
+            Text(
+                "${transaction.category}",
+                style = Typography.caption
+            )
+        }
+        Text(
+            text = "\u20B9 " + transaction.amount,
+            style = Typography.overline,
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .align(Alignment.CenterVertically)
+        )
     }
 }

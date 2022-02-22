@@ -21,18 +21,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import dev.chintansoni.expensetracker.ui.navigator.MainNavigator
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
-import org.koin.androidx.compose.inject
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_FORGOT_PASSWORD = "ForgotPassword"
 
 @Composable
-fun ForgotPasswordScreen() {
+fun ForgotPasswordScreen(navController: NavController = rememberNavController()) {
 
-    val mainNavigator: MainNavigator by inject()
     val forgotPasswordViewModel: ForgotPasswordViewModel by viewModel()
 
     val email: String by forgotPasswordViewModel.emailSF.collectAsState()
@@ -45,7 +45,7 @@ fun ForgotPasswordScreen() {
     }
 
     val onBackClick: () -> Unit = {
-        mainNavigator.navigate(MainRoute.GoBackViewRoute())
+        navController.navigate(BackViewRoute)
     }
 
     val onTryAgainClick: () -> Unit = {

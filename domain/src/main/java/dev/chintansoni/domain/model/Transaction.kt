@@ -35,4 +35,12 @@ data class Transaction(
             deletedDate = null
         )
     }
+
+    fun printableAmount(): String {
+        return if (amount > 0.0) amount.toString() else ""
+    }
+
+    fun isValid(): Boolean {
+        return amount > 0.0 && category > 0 && date > 0
+    }
 }
