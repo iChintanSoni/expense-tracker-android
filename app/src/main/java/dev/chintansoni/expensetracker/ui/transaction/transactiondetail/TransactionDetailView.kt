@@ -200,9 +200,9 @@ fun AddEditExpenseContent(
             Row(modifier = Modifier.fillMaxWidth()) {
 
                 CategoryView(
+                    enabled = isEditMode,
                     selectedCategory = transaction.category,
                     onCategorySelected = onCategorySelected,
-                    enabled = isEditMode,
                     categories = categories
                 )
 
@@ -295,7 +295,11 @@ fun RowScope.DatePicker(
         singleLine = true,
         trailingIcon = {
             IconButton(
-                onClick = { datePickerDialog.show() },
+                onClick = {
+                    if (enabled) {
+                        datePickerDialog.show()
+                    }
+                },
                 content = DropDownIcon
             )
         },

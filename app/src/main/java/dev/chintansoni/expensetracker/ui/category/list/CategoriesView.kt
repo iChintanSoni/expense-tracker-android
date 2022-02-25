@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package dev.chintansoni.expensetracker.ui.category.list
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -84,7 +87,11 @@ fun CategoriesContent(
     ) {
         LazyColumn {
             itemsIndexed(categories) { index, category ->
-                CategoryItem(category, onCategoryClick)
+                CategoryItem(
+                    modifier = Modifier.animateItemPlacement(),
+                    category = category,
+                    onCategoryClick = onCategoryClick
+                )
                 if (index < categories.lastIndex)
                     Divider()
             }
@@ -95,12 +102,13 @@ fun CategoriesContent(
 @Preview(showBackground = true)
 @Composable
 fun CategoryItem(
+    modifier: Modifier = Modifier,
     category: Category = Category.dummyInstance(),
     onCategoryClick: (Category) -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = modifier
             .clickable { onCategoryClick(category) }
             .padding(16.dp)
     ) {

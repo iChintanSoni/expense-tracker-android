@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,7 +30,7 @@ fun TextFieldWithError(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column {
-        TextField(
+        OutlinedTextField(
             modifier = modifier,
             value = value,
             leadingIcon = leadingIcon,

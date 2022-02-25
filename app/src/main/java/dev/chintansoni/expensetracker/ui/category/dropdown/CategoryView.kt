@@ -9,6 +9,7 @@ import androidx.compose.material.ExposedDropdownMenuDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,18 +22,24 @@ import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RowScope.CategoryView(
-    selectedCategory: Int = 0,
     enabled: Boolean = false,
+    selectedCategory: Int = 0,
     onCategorySelected: (Int) -> Unit = {},
     categories: List<Category>
 ) {
     var expanded by remember { mutableStateOf(false) }
+    var isEditMode by remember { mutableStateOf(false) }
     val onExpandChange: (Boolean) -> Unit = {
-        expanded = it
+        if (isEditMode) {
+            expanded = it
+        }
+    }
+    LaunchedEffect(key1 = enabled) {
+        isEditMode = enabled
     }
     CategoryContent(
         expand = expanded,
-        enabled = enabled,
+        enabled = isEditMode,
         onExpandChange = onExpandChange,
         selectedCategory = selectedCategory,
         onCategorySelected = onCategorySelected,
@@ -67,9 +74,7 @@ fun RowScope.CategoryContent(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f),
-        onExpandedChange = {
-            onExpandChange(it)
-        }
+        onExpandedChange = onExpandChange
     ) {
         OutlinedTextField(
             modifier = Modifier

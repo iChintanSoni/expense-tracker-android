@@ -52,11 +52,13 @@ class TransactionDetailViewModel(
                     }
             }
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             categoryRepository
                 .getAllCategoriesFlow()
-                .collectLatest {
-                    _categoriesStateFlow.update { it }
+                .collectLatest { categories ->
+                    _categoriesStateFlow.update {
+                        categories
+                    }
                 }
         }
     }
@@ -66,9 +68,7 @@ class TransactionDetailViewModel(
         val amountInFloat = amount.toFloatOrNull()
         if (amountInFloat != null) {
             _amountErrorStateFlow.update { "" }
-            _transactionStateFlow.update { transaction ->
-                transaction.copy(amount = amountInFloat)
-            }
+            _transactionStateFlow.update { it.copy(amount = amountInFloat) }
         } else {
             _amountErrorStateFlow.update { "Please enter a valid amount" }
             _transactionStateFlow.update { it.copy(amount = 0.0f) }

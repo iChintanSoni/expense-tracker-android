@@ -1,5 +1,6 @@
 package dev.chintansoni.expensetracker.ui.transaction.list
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -80,6 +81,7 @@ fun NoTransactionsAvailable() {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 fun TransactionList(
@@ -88,7 +90,11 @@ fun TransactionList(
 ) {
     LazyColumn {
         itemsIndexed(transactionList) { index, transaction ->
-            TransactionItem(transaction, onTransactionClick)
+            TransactionItem(
+                modifier = Modifier.animateItemPlacement(),
+                transaction = transaction,
+                onTransactionClick = onTransactionClick
+            )
             if (index < transactionList.lastIndex)
                 Divider()
         }
@@ -98,11 +104,12 @@ fun TransactionList(
 @Preview(showBackground = true)
 @Composable
 fun TransactionItem(
+    modifier: Modifier = Modifier,
     transaction: TransactionDetail = TransactionDetail.dummyInstance(),
     onTransactionClick: (TransactionDetail) -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clickable { onTransactionClick(transaction) }
     ) {

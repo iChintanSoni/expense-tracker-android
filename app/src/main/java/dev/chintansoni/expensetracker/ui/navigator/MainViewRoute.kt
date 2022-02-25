@@ -42,6 +42,6 @@ sealed class MainRoute(
 
     object CategoriesViewRoute : MainRoute(ROUTE_CATEGORIES)
 
-    data class ManageCategoryViewRoute(val categoryId: Int) :
+    data class ManageCategoryViewRoute(val categoryId: Int = 0) :
         MainRoute(buildManageCategoryRoute(categoryId))
 }

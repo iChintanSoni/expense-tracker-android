@@ -48,7 +48,7 @@ import org.koin.core.parameter.parametersOf
 const val PARAM_CATEGORY_ID = "categoryId"
 const val ROUTE_MANAGE_CATEGORY = "manage-category/{${PARAM_CATEGORY_ID}}"
 
-fun buildManageCategoryRoute(categoryId: Int): String {
+fun buildManageCategoryRoute(categoryId: Int = 0): String {
     return "manage-category/$categoryId"
 }
 
