@@ -2,6 +2,7 @@ package dev.chintansoni.expensetracker.ui.transaction.transactiondetail
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -11,10 +12,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,13 +50,15 @@ import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.category.dropdown.CategoryView
 import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
+import dev.chintansoni.expensetracker.ui.theme.BackIcon
+import dev.chintansoni.expensetracker.ui.theme.DeleteIcon
 import dev.chintansoni.expensetracker.ui.theme.DoneIcon
 import dev.chintansoni.expensetracker.ui.theme.DrawableIcon
 import dev.chintansoni.expensetracker.ui.theme.DropDownIcon
+import dev.chintansoni.expensetracker.ui.theme.EditIcon
 import dev.chintansoni.expensetracker.ui.theme.EventIcon
 import dev.chintansoni.expensetracker.ui.theme.NoteIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
-import dev.chintansoni.expensetracker.ui.util.MainToolbar
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
 import org.koin.core.parameter.parametersOf
@@ -86,32 +92,16 @@ fun TransactionDetailView(
 ) {
 
     val transactionDetailViewModel: TransactionDetailViewModel by viewModel {
-        parametersOf(transactionId)
+        parametersOf(
+            transactionId
+        )
     }
 
+    val isEditMode: Boolean by transactionDetailViewModel.isEditModeStateFlow.collectAsState()
     val transaction: Transaction by transactionDetailViewModel.transactionStateFlow.collectAsState()
-
+    val amount by transactionDetailViewModel.amountStateFlow.collectAsState()
     val amountError by transactionDetailViewModel.amountErrorStateFlow.collectAsState()
-    val onAmountErrorChange: (String) -> Unit = {
-        transactionDetailViewModel.setAmountError(it)
-    }
-
     val categories by transactionDetailViewModel.categoriesStateFlow.collectAsState()
-
-    val onAmountChange: (String) -> Unit = {
-        transactionDetailViewModel.setAmount(it)
-    }
-    val onDateChange: (DateTime) -> Unit = {
-        transactionDetailViewModel.setDate(it)
-    }
-
-    val onNoteChange: (String) -> Unit = {
-        transactionDetailViewModel.setNote(it)
-    }
-
-    val categoryChange: (Int) -> Unit = {
-        transactionDetailViewModel.setCategory(it)
-    }
 
     val onBackClick: () -> Unit = {
         navController.navigate(BackViewRoute)
@@ -126,14 +116,17 @@ fun TransactionDetailView(
     AddEditExpenseContent(
         onBackClick = onBackClick,
         transaction = transaction,
-        onAmountChange = onAmountChange,
+        amount = amount,
+        onAmountChange = transactionDetailViewModel::setAmount,
         amountError = amountError,
-        onAmountErrorChange = onAmountErrorChange,
-        onDateChange = onDateChange,
-        onNoteChange = onNoteChange,
+        onAmountErrorChange = transactionDetailViewModel::setAmountError,
+        onDateChange = transactionDetailViewModel::setDate,
+        onNoteChange = transactionDetailViewModel::setNote,
         categories = categories,
-        onCategorySelected = categoryChange,
-        onDoneClick = onDoneClick
+        onCategorySelected = transactionDetailViewModel::setCategory,
+        onDoneClick = onDoneClick,
+        isEditMode = isEditMode,
+        toggleEditMode = transactionDetailViewModel::toggleEditMode
     )
 }
 
@@ -142,6 +135,7 @@ fun TransactionDetailView(
 fun AddEditExpenseContent(
     onBackClick: () -> Unit = {},
     transaction: Transaction = Transaction.newInstance(),
+    amount: String = "",
     onAmountChange: (String) -> Unit = {},
     amountError: String? = null,
     onAmountErrorChange: (String) -> Unit = {},
@@ -149,43 +143,55 @@ fun AddEditExpenseContent(
     onNoteChange: (String) -> Unit = {},
     categories: List<Category> = emptyList(),
     onCategorySelected: (Int) -> Unit = {},
-    onDoneClick: (Transaction) -> Unit = {}
+    onDeleteTransaction: (Transaction) -> Unit = {},
+    onDoneClick: (Transaction) -> Unit = {},
+    isEditMode: Boolean = false,
+    toggleEditMode: () -> Unit = {},
 ) {
-
-    var localAmountState by remember {
-        mutableStateOf(transaction.printableAmount())
+    var shouldShowConfirmDialog by remember {
+        mutableStateOf(false)
     }
-
     Scaffold(
         topBar = {
-            MainToolbar(
-                title = "Expense Details",
-                onBackClick = onBackClick
+            TopAppBar(
+                title = { },
+                navigationIcon = {
+                    IconButton(
+                        onClick = onBackClick,
+                        content = BackIcon
+                    )
+                },
+                actions = {
+                    if (!isEditMode) {
+                        IconButton(onClick = { shouldShowConfirmDialog = true }) {
+                            DeleteIcon()
+                        }
+                    }
+                }
             )
         },
         floatingActionButton = {
-            Fab(DoneIcon) {
-                onDoneClick(transaction)
+            if (isEditMode) {
+                Fab(DoneIcon) {
+                    onDoneClick(transaction)
+                    toggleEditMode()
+                }
+            } else {
+                Fab(EditIcon) {
+                    toggleEditMode()
+                }
             }
         }
     ) {
         Column(Modifier.padding(16.dp)) {
-
             TextFieldWithError(
                 modifier = Modifier.fillMaxWidth(),
                 label = "Amount",
                 leadingIcon = { DrawableIcon(resId = R.drawable.currency_inr) },
-                value = localAmountState,
+                value = amount,
+                enabled = isEditMode,
                 errorText = amountError,
-                onValueChange = {
-                    localAmountState = it
-                    if (it.toFloatOrNull() != null) {
-                        onAmountChange(it)
-                        onAmountErrorChange("")
-                    } else {
-                        onAmountErrorChange("Please enter a valid amount")
-                    }
-                },
+                onValueChange = onAmountChange,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
@@ -193,11 +199,17 @@ fun AddEditExpenseContent(
 
             Row(modifier = Modifier.fillMaxWidth()) {
 
-                CategoryView(transaction.category, onCategorySelected, categories)
+                CategoryView(
+                    selectedCategory = transaction.category,
+                    onCategorySelected = onCategorySelected,
+                    enabled = isEditMode,
+                    categories = categories
+                )
 
                 Spacer(modifier = Modifier.width(16.dp))
 
                 DatePicker(
+                    enabled = isEditMode,
                     selectedDateTime = transaction.date.toDateTime(),
                     onDateSelected = onDateChange
                 )
@@ -208,6 +220,7 @@ fun AddEditExpenseContent(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = transaction.note ?: "",
+                enabled = isEditMode,
                 leadingIcon = NoteIcon,
                 maxLines = 5,
                 onValueChange = onNoteChange,
@@ -215,10 +228,49 @@ fun AddEditExpenseContent(
             )
         }
     }
+
+    if (shouldShowConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                shouldShowConfirmDialog = false
+            },
+            title = {
+                Text(text = "Confirm")
+            },
+            text = {
+                Text(
+                    "Are you sure you want to delete this transaction?\nNote: This action cannot be reverted."
+                )
+            },
+            buttons = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = 8.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(
+                        onClick = { shouldShowConfirmDialog = false }
+                    ) {
+                        Text("Cancel")
+                    }
+                    TextButton(
+                        onClick = {
+                            shouldShowConfirmDialog = false
+                            onDeleteTransaction(transaction)
+                        }
+                    ) {
+                        Text("Delete")
+                    }
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun RowScope.DatePicker(
+    enabled: Boolean = true,
     selectedDateTime: DateTime = currentDateTime(),
     onDateSelected: (DateTime) -> Unit = {}
 ) {
@@ -238,6 +290,7 @@ fun RowScope.DatePicker(
             .fillMaxWidth()
             .weight(1f),
         value = selectedDateTime.toDateTime().date.toString(),
+        enabled = enabled,
         leadingIcon = EventIcon,
         singleLine = true,
         trailingIcon = {

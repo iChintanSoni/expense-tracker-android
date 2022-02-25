@@ -3,15 +3,19 @@ package dev.chintansoni.expensetracker.ui.home.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.chintansoni.domain.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ProfileViewModel(private val userRepository: UserRepository) :
     ViewModel() {
 
     fun logout(result: () -> Unit = {}) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             userRepository.setUserLoggedIn(false)
-            result()
+            withContext(Dispatchers.Main) {
+                result()
+            }
         }
     }
 

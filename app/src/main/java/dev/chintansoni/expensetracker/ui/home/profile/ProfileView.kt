@@ -33,6 +33,17 @@ fun ProfileView(navController: NavController = rememberNavController()) {
 
     val profileViewModel by viewModel<ProfileViewModel>()
 
+    val onLogout: () -> Unit = {
+        profileViewModel.logout {
+            navController.navigate(MainRoute.HomeToSignInViewRoute)
+        }
+    }
+    ProfileContent(onLogout)
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileContent(onLogout: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -52,21 +63,12 @@ fun ProfileView(navController: NavController = rememberNavController()) {
         Text(text = "Chintan Soni", style = Typography.h6)
 
         TextButton(
-            onClick = {
-                profileViewModel.logout {
-                    navController.navigate(MainRoute.HomeToSignInViewRoute)
-                }
-            }, modifier = Modifier
+            onClick = onLogout,
+            modifier = Modifier
                 .padding(12.dp)
                 .width(280.dp)
         ) {
             Text("Logout", modifier = Modifier.padding(4.dp))
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileComposablePreview() {
-    ProfileView()
 }

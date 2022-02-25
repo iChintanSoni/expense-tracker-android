@@ -2,6 +2,7 @@ package dev.chintansoni.expensetracker.ui.transaction.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,29 +28,36 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import dev.chintansoni.domain.model.Transaction
+import androidx.navigation.NavController
+import dev.chintansoni.domain.model.TransactionDetail
 import dev.chintansoni.domain.model.generateDummyTransactions
 import dev.chintansoni.expensetracker.R
+import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
 import org.koin.androidx.compose.viewModel
 
-const val ROUTE_LIST = "List"
-
 @Composable
-fun TransactionsView() {
+fun TransactionsView(mainNavController: NavController) {
+    val onTransactionClick: (TransactionDetail) -> Unit = {
+        mainNavController.navigate(MainRoute.TransactionDetailViewRoute(it.id))
+    }
     val transactionsViewModel: TransactionsViewModel by viewModel()
-    val transactions: List<Transaction> by transactionsViewModel.transactionsFlow.collectAsState(
+    val transactions: List<TransactionDetail> by transactionsViewModel.transactionsFlow.collectAsState(
         emptyList()
     )
-    TransactionsContent(transactions)
+    TransactionsContent(transactions, onTransactionClick)
 }
 
 @Composable
-fun TransactionsContent(transactions: List<Transaction> = generateDummyTransactions()) {
+fun TransactionsContent(
+    transactions: List<TransactionDetail> = emptyList(),
+    onTransactionClick: (TransactionDetail) -> Unit = {}
+) {
     if (transactions.isEmpty()) {
         NoTransactionsAvailable()
     } else {
-        TransactionList()
+        TransactionList(transactions, onTransactionClick)
     }
 }
 
@@ -74,21 +82,29 @@ fun NoTransactionsAvailable() {
 
 @Preview(showBackground = true)
 @Composable
-fun TransactionList(transactionList: List<Transaction> = generateDummyTransactions()) {
+fun TransactionList(
+    transactionList: List<TransactionDetail> = generateDummyTransactions(),
+    onTransactionClick: (TransactionDetail) -> Unit = {}
+) {
     LazyColumn {
         itemsIndexed(transactionList) { index, transaction ->
-            TransactionItem(transaction)
+            TransactionItem(transaction, onTransactionClick)
             if (index < transactionList.lastIndex)
                 Divider()
         }
     }
 }
 
+@Preview(showBackground = true)
 @Composable
-fun TransactionItem(transaction: Transaction = Transaction.newInstance()) {
+fun TransactionItem(
+    transaction: TransactionDetail = TransactionDetail.dummyInstance(),
+    onTransactionClick: (TransactionDetail) -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onTransactionClick(transaction) }
     ) {
         Column(
             modifier = Modifier
@@ -114,11 +130,11 @@ fun TransactionItem(transaction: Transaction = Transaction.newInstance()) {
                 .padding(vertical = 8.dp)
         ) {
             Text(
-                transaction.note ?: "",
+                text = transaction.note ?: "",
                 style = Typography.subtitle1
             )
             Text(
-                "${transaction.category}",
+                text = transaction.name,
                 style = Typography.caption
             )
         }
@@ -126,7 +142,10 @@ fun TransactionItem(transaction: Transaction = Transaction.newInstance()) {
             text = "\u20B9 " + transaction.amount,
             style = Typography.overline,
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .padding(
+                    horizontal = 16.dp,
+                    vertical = 8.dp
+                )
                 .align(Alignment.CenterVertically)
         )
     }

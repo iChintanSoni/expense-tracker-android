@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -21,6 +21,7 @@ fun TextFieldWithError(
     modifier: Modifier = Modifier,
     value: String = "",
     label: String = "",
+    enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
     errorText: String? = null,
@@ -29,10 +30,11 @@ fun TextFieldWithError(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     Column {
-        OutlinedTextField(
+        TextField(
             modifier = modifier,
             value = value,
             leadingIcon = leadingIcon,
+            enabled = enabled,
             isError = !errorText.isNullOrEmpty(),
             onValueChange = onValueChange,
             singleLine = singleLine,

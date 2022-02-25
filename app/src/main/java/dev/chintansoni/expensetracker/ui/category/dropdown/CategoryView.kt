@@ -22,6 +22,7 @@ import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
 @Composable
 fun RowScope.CategoryView(
     selectedCategory: Int = 0,
+    enabled: Boolean = false,
     onCategorySelected: (Int) -> Unit = {},
     categories: List<Category>
 ) {
@@ -31,6 +32,7 @@ fun RowScope.CategoryView(
     }
     CategoryContent(
         expand = expanded,
+        enabled = enabled,
         onExpandChange = onExpandChange,
         selectedCategory = selectedCategory,
         onCategorySelected = onCategorySelected,
@@ -43,6 +45,7 @@ fun RowScope.CategoryView(
 @Composable
 fun RowScope.CategoryContent(
     expand: Boolean = false,
+    enabled: Boolean = false,
     onExpandChange: (Boolean) -> Unit = {},
     selectedCategory: Int = 0,
     onCategorySelected: (Int) -> Unit = {},
@@ -64,12 +67,15 @@ fun RowScope.CategoryContent(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1f),
-        onExpandedChange = onExpandChange
+        onExpandedChange = {
+            onExpandChange(it)
+        }
     ) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             readOnly = true,
+            enabled = enabled,
             value = fetchCategoryText(selectedCategory, categories),
             singleLine = true,
             onValueChange = { },

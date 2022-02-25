@@ -13,7 +13,10 @@ val repositoryModules = module {
     }
 
     single<TransactionRepository> {
-        TransactionRepositoryImpl(get())
+        TransactionRepositoryImpl(
+            transactionDao = get(),
+            transactionDetailDao = get()
+        )
     }
 
     single<CategoryRepository> {

@@ -1,11 +1,12 @@
 package dev.chintansoni.domain.repository
 
 import dev.chintansoni.domain.model.Transaction
+import dev.chintansoni.domain.model.TransactionDetail
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
 
-    fun getAllTransactionsFlow(): Flow<List<Transaction>>
+    fun getAllTransactionsFlow(): Flow<List<TransactionDetail>>
 
     fun getTransactionByIdFlow(id: Long): Flow<Transaction?>
 

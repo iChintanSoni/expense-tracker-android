@@ -12,6 +12,9 @@ val databaseModule = module {
         getDatabase().transactionDao()
     }
     single {
+        getDatabase().transactionDetailViewDao()
+    }
+    single {
         getDatabase().categoryDao()
     }
 }
@@ -19,6 +22,9 @@ val databaseModule = module {
 val testDatabaseModule = module {
     single {
         provideTestExpenseTrackerDatabase(get())
+    }
+    single {
+        getDatabase().transactionDetailViewDao()
     }
     single {
         getDatabase().transactionDao()

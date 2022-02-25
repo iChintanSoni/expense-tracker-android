@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TransactionDetailViewModel(
@@ -25,17 +26,28 @@ class TransactionDetailViewModel(
     private val _amountErrorStateFlow = MutableStateFlow<String?>(null)
     val amountErrorStateFlow = _amountErrorStateFlow.asStateFlow()
 
+    private val _amountStateFlow = MutableStateFlow("")
+    val amountStateFlow = _amountStateFlow.asStateFlow()
+
     private val _categoriesStateFlow = MutableStateFlow<List<Category>>(emptyList())
     val categoriesStateFlow = _categoriesStateFlow.asStateFlow()
+
+    private val _isEditModeStateFlow = MutableStateFlow(transactionId == 0L)
+    val isEditModeStateFlow = _isEditModeStateFlow.asStateFlow()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
             if (transactionId != 0L) {
                 transactionRepository
                     .getTransactionByIdFlow(transactionId)
-                    .collectLatest { transaction ->
-                        transaction?.let {
-                            this@TransactionDetailViewModel._transactionStateFlow.value = it
+                    .collectLatest {
+                        it?.let { transaction ->
+                            this@TransactionDetailViewModel._transactionStateFlow.update {
+                                transaction
+                            }
+                            this@TransactionDetailViewModel._amountStateFlow.update {
+                                transaction.printableAmount()
+                            }
                         } ?: throw NotFoundException(transactionId)
                     }
             }
@@ -44,26 +56,39 @@ class TransactionDetailViewModel(
             categoryRepository
                 .getAllCategoriesFlow()
                 .collectLatest {
-                    _categoriesStateFlow.value = it
+                    _categoriesStateFlow.update { it }
                 }
         }
     }
 
     fun setAmount(amount: String) {
-        val amountInFloat = amount.toFloat()
-        _transactionStateFlow.value = _transactionStateFlow.value.copy(amount = amountInFloat)
+        _amountStateFlow.update { amount }
+        val amountInFloat = amount.toFloatOrNull()
+        if (amountInFloat != null) {
+            _amountErrorStateFlow.update { "" }
+            _transactionStateFlow.update { transaction ->
+                transaction.copy(amount = amountInFloat)
+            }
+        } else {
+            _amountErrorStateFlow.update { "Please enter a valid amount" }
+            _transactionStateFlow.update { it.copy(amount = 0.0f) }
+        }
     }
 
     fun setAmountError(amountError: String) {
-        _amountErrorStateFlow.value = amountError
+        _amountErrorStateFlow.update { amountError }
     }
 
     fun setNote(note: String) {
-        _transactionStateFlow.value = _transactionStateFlow.value.copy(note = note)
+        _transactionStateFlow.update { it.copy(note = note) }
     }
 
     fun setCategory(categoryId: Int) {
-        _transactionStateFlow.value = _transactionStateFlow.value.copy(category = categoryId)
+        _transactionStateFlow.update { it.copy(category = categoryId) }
+    }
+
+    fun toggleEditMode() {
+        _isEditModeStateFlow.update { !it }
     }
 
     fun addUpdateExpense(transaction: Transaction) {
@@ -83,7 +108,6 @@ class TransactionDetailViewModel(
     }
 
     fun setDate(date: DateTime) {
-        _transactionStateFlow.value =
-            _transactionStateFlow.value.copy(date = date.toEpochMilliseconds())
+        _transactionStateFlow.update { it.copy(date = date.toEpochMilliseconds()) }
     }
 }

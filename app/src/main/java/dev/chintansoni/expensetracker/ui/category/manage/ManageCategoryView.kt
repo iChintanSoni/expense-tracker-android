@@ -19,6 +19,7 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -76,9 +77,9 @@ fun ManageCategoryView(
     val manageCategoryViewModel: ManageCategoryViewModel by viewModel {
         parametersOf(categoryId)
     }
-    val category by remember { manageCategoryViewModel.category }
-    val nameError by remember { manageCategoryViewModel.nameError }
-    val errorState by remember { manageCategoryViewModel.errorState }
+    val category by manageCategoryViewModel.categoryStateFlow.collectAsState()
+    val nameError by manageCategoryViewModel.nameErrorStateFlow.collectAsState()
+    val errorState by manageCategoryViewModel.errorStateFlow.collectAsState()
 
     ManageCategoryContent(
         errorState = errorState,

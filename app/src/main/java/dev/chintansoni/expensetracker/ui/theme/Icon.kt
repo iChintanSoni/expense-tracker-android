@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventNote
 import androidx.compose.material.icons.filled.List
@@ -81,6 +82,10 @@ val SettingIcon: @Composable () -> Unit =
 val deleteImage: ImageVector = Icons.Default.Delete
 val DeleteIcon: @Composable () -> Unit =
     { Icon(imageVector = deleteImage, contentDescription = "Delete Icon") }
+
+val editImage: ImageVector = Icons.Default.Edit
+val EditIcon: @Composable () -> Unit =
+    { Icon(imageVector = editImage, contentDescription = "Edit Icon") }
 
 @Composable
 fun DrawableIcon(@DrawableRes resId: Int, contentDescription: String? = null) =

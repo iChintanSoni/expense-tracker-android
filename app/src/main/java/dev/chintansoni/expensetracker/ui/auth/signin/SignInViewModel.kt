@@ -9,7 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SignInViewModel(
     private val userRepository: UserRepository,
@@ -23,19 +25,21 @@ class SignInViewModel(
     val passwordSF: StateFlow<String> = _passwordMSF.asStateFlow()
 
     fun setEmail(email: String) {
-        _emailMSF.value = email
+        _emailMSF.update { email }
     }
 
     fun setPassword(password: String) {
-        _passwordMSF.value = password
+        _passwordMSF.update { password }
     }
 
     fun onSignInClick(email: String, password: String, result: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            println("Logged in using $email / $password")
+            println("Email: $email & Password: $password")
             userRepository.setUserLoggedIn(true)
             insertDefaultCategories()
-            result()
+            withContext(Dispatchers.Main) {
+                result()
+            }
         }
     }
 

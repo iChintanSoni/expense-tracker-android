@@ -53,12 +53,13 @@ fun HomeView(navController: NavController = rememberNavController()) {
     val onAddClick: () -> Unit = {
         navController.navigate(MainRoute.TransactionDetailViewRoute(0))
     }
-    HomeContent(onSettingClick = onSettingClick, onAddClick)
+    HomeContent(mainNavController = navController, onSettingClick = onSettingClick, onAddClick)
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun HomeContent(
+    mainNavController: NavController = rememberNavController(),
     onSettingClick: () -> Unit = {},
     onAddClick: () -> Unit = {}
 ) {
@@ -81,7 +82,7 @@ private fun HomeContent(
             BottomNavigation(navController)
         }
     ) { innerPadding ->
-        NavigationGraph(innerPadding, navController)
+        NavigationGraph(innerPadding, navController, mainNavController)
     }
 }
 
@@ -129,16 +130,15 @@ fun BottomNavigation(
 @Composable
 fun NavigationGraph(
     innerPadding: PaddingValues = PaddingValues(16.dp),
-    navController: NavHostController = NavHostController(
-        LocalContext.current
-    )
+    navController: NavHostController = rememberNavController(),
+    mainNavController: NavController = rememberNavController()
 ) {
     NavHost(
         navController,
         startDestination = NavItem.ChartNavItem.route,
         Modifier.padding(innerPadding)
     ) {
-        homeContentRoute()
+        homeContentRoute(mainNavController)
     }
 }
 

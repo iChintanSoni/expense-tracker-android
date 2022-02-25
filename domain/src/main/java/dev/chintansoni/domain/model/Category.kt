@@ -51,14 +51,3 @@ fun generateDefaultCategories(): List<Category> {
         )
     }
 }
-
-/**
- * Generates dummy list of categories
- */
-fun generateDummyTransactions(): List<Transaction> {
-    val transactionList = mutableListOf<Transaction>()
-    repeat(1000) {
-        transactionList.add(Transaction.dummyInstance())
-    }
-    return transactionList
-}

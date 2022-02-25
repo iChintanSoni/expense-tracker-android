@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class SignUpViewModel : ViewModel() {
 
@@ -20,18 +21,18 @@ class SignUpViewModel : ViewModel() {
     val mobileSF: StateFlow<String> = _mobileMSF.asStateFlow()
 
     fun setEmail(email: String) {
-        _emailMSF.value = email
+        _emailMSF.update { email }
     }
 
     fun setFirstName(firstName: String) {
-        _firstNameMSF.value = firstName
+        _firstNameMSF.update { firstName }
     }
 
     fun setLastName(lastName: String) {
-        _lastNameMSF.value = lastName
+        _lastNameMSF.update { lastName }
     }
 
     fun setMobile(mobile: String) {
-        _mobileMSF.value = mobile
+        _mobileMSF.update { mobile }
     }
 }

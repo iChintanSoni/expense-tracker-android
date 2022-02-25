@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -19,23 +20,25 @@ class ForgotPasswordViewModel : ViewModel() {
     val sendLinkStatusSF: StateFlow<SendLinkStatus> = _sendLinkStatusMSF.asStateFlow()
 
     fun setEmail(email: String) {
-        _emailMSF.value = email
+        _emailMSF.update { email }
     }
 
     fun sendLink() {
-        _sendLinkStatusMSF.value = SendLinkStatus.InProgress
+        _sendLinkStatusMSF.update { SendLinkStatus.InProgress }
         viewModelScope.launch {
             delay(1000)
-            _sendLinkStatusMSF.value = if (Random.nextBoolean()) {
-                SendLinkStatus.Success
-            } else {
-                SendLinkStatus.Failure
+            _sendLinkStatusMSF.update {
+                if (Random.nextBoolean()) {
+                    SendLinkStatus.Success
+                } else {
+                    SendLinkStatus.Failure
+                }
             }
         }
     }
 
     fun resetSendLinkStatus() {
-        _sendLinkStatusMSF.value = SendLinkStatus.Default
+        _sendLinkStatusMSF.update { SendLinkStatus.Default }
     }
 }
 
