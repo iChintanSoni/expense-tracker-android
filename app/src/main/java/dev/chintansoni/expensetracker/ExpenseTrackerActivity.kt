@@ -20,7 +20,7 @@ import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.setting.settingRoute
 import dev.chintansoni.expensetracker.ui.splash.splashRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
-import dev.chintansoni.expensetracker.ui.transaction.transactiondetail.transactionDetailRoute
+import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
 class ExpenseTrackerActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

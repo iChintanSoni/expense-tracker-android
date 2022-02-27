@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.transaction.transactiondetail
+package dev.chintansoni.expensetracker.ui.transaction.detail
 
 open class TransactionDetailException(message: String?) : Exception(message)
 class NotFoundException(id: Long) :

@@ -9,7 +9,7 @@ import dev.chintansoni.expensetracker.ui.category.manage.buildManageCategoryRout
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
 import dev.chintansoni.expensetracker.ui.setting.ROUTE_SETTING
 import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
-import dev.chintansoni.expensetracker.ui.transaction.transactiondetail.transactionDetailRoute
+import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
 sealed class MainRoute(
     override val route: String,

@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.transaction.transactiondetail
+package dev.chintansoni.expensetracker.ui.transaction.detail
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler

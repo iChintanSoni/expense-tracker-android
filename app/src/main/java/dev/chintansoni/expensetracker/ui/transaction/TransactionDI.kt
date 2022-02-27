@@ -1,7 +1,7 @@
 package dev.chintansoni.expensetracker.ui.transaction
 
+import dev.chintansoni.expensetracker.ui.transaction.detail.TransactionDetailViewModel
 import dev.chintansoni.expensetracker.ui.transaction.list.TransactionsViewModel
-import dev.chintansoni.expensetracker.ui.transaction.transactiondetail.TransactionDetailViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
