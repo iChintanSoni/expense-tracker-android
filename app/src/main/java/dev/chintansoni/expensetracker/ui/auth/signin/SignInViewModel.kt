@@ -1,44 +1,54 @@
 package dev.chintansoni.expensetracker.ui.auth.signin
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.chintansoni.domain.model.generateDefaultCategories
 import dev.chintansoni.domain.repository.CategoryRepository
 import dev.chintansoni.domain.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import dev.chintansoni.expensetracker.base.BaseViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class SignInViewModel(
     private val userRepository: UserRepository,
     private val categoryRepository: CategoryRepository
-) : ViewModel() {
+) :
+    BaseViewModel<SignInContract.Event, SignInContract.State, SignInContract.Effect>() {
 
-    private val _emailMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val emailSF: StateFlow<String> = _emailMSF.asStateFlow()
+    override fun createInitialState(): SignInContract.State = SignInContract.State.default()
 
-    private val _passwordMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val passwordSF: StateFlow<String> = _passwordMSF.asStateFlow()
-
-    fun setEmail(email: String) {
-        _emailMSF.update { email }
+    override fun handleEvent(event: SignInContract.Event) = when (event) {
+        is SignInContract.Event.OnEmailChange -> {
+            setState { copy(email = event.email) }
+        }
+        is SignInContract.Event.OnPasswordChange -> {
+            setState { copy(password = event.password) }
+        }
+        SignInContract.Event.OnSignInClick -> {
+            performLogin()
+        }
+        SignInContract.Event.OnForgotPasswordClick -> {
+            setEffect { SignInContract.Effect.NavigateToForgotPassword }
+        }
+        SignInContract.Event.OnSignUpClick -> {
+            setEffect { SignInContract.Effect.NavigateToSignUp }
+        }
     }
 
-    fun setPassword(password: String) {
-        _passwordMSF.update { password }
-    }
+    private fun performLogin() {
+        val emailError = currentState.validateEmail()
+        setState { copy(emailError = emailError) }
 
-    fun onSignInClick(email: String, password: String, result: () -> Unit) {
-        viewModelScope.launch(Dispatchers.IO) {
-            println("Email: $email & Password: $password")
-            userRepository.setUserLoggedIn(true)
-            insertDefaultCategories()
-            withContext(Dispatchers.Main) {
-                result()
+        val passwordError = currentState.validatePassword()
+        setState { copy(passwordError = passwordError) }
+
+        if (currentState.isFormValid()) {
+            viewModelScope.launch {
+                setState { copy(isLoading = true) }
+                delay(1500)
+                userRepository.setUserLoggedIn(true)
+                insertDefaultCategories()
+                setState { copy(isLoading = false) }
+                setEffect { SignInContract.Effect.NavigateToHome }
             }
         }
     }
