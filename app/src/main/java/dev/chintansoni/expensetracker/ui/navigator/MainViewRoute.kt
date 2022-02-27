@@ -4,11 +4,11 @@ import androidx.navigation.NavOptions
 import dev.chintansoni.expensetracker.ui.auth.forgotpassword.ROUTE_FORGOT_PASSWORD
 import dev.chintansoni.expensetracker.ui.auth.signin.ROUTE_SIGN_IN
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
+import dev.chintansoni.expensetracker.ui.auth.splash.ROUTE_SPLASH
 import dev.chintansoni.expensetracker.ui.category.detail.buildCategoryDetailRoute
 import dev.chintansoni.expensetracker.ui.category.list.ROUTE_CATEGORIES
 import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
 import dev.chintansoni.expensetracker.ui.setting.ROUTE_SETTING
-import dev.chintansoni.expensetracker.ui.splash.ROUTE_SPLASH
 import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
 sealed class MainRoute(
