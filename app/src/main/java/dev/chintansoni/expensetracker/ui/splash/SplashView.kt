@@ -55,7 +55,7 @@ fun SplashContent() {
     ) {
         Image(
             modifier = Modifier
-                .fillMaxSize(0.5f),
+                .fillMaxSize(0.9f),
             painter = painterResource(id = R.drawable.ic_launcher_foreground),
             contentDescription = "App Logo"
         )

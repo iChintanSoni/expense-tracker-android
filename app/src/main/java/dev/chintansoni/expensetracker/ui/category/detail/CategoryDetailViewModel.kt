@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.category.manage
+package dev.chintansoni.expensetracker.ui.category.detail
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class ManageCategoryViewModel(
+class CategoryDetailViewModel(
     private val categoryId: Int,
     private val categoryRepository: CategoryRepository,
     private val categoryUseCase: CategoryUseCase
@@ -41,7 +41,7 @@ class ManageCategoryViewModel(
                 categoryRepository.getCategoryByIdFlow(categoryId)
                     .collectLatest { category ->
                         category?.let {
-                            this@ManageCategoryViewModel._categoryStateFlow.update { it }
+                            this@CategoryDetailViewModel._categoryStateFlow.update { it }
                         } ?: throw CategoryNotFoundException(categoryId)
                     }
             }

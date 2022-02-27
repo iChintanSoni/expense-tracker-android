@@ -1,7 +1,7 @@
 package dev.chintansoni.expensetracker.ui.category
 
+import dev.chintansoni.expensetracker.ui.category.detail.CategoryDetailViewModel
 import dev.chintansoni.expensetracker.ui.category.list.CategoriesViewModel
-import dev.chintansoni.expensetracker.ui.category.manage.ManageCategoryViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -12,7 +12,7 @@ val categoryModule = module {
         )
     }
     viewModel { (categoryId: Int) ->
-        ManageCategoryViewModel(
+        CategoryDetailViewModel(
             categoryId = categoryId,
             categoryRepository = get(),
             categoryUseCase = get()

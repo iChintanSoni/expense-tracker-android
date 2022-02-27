@@ -1,4 +1,4 @@
-package dev.chintansoni.expensetracker.ui.category.manage
+package dev.chintansoni.expensetracker.ui.category.detail
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarDuration
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -46,10 +47,10 @@ import org.koin.androidx.compose.viewModel
 import org.koin.core.parameter.parametersOf
 
 const val PARAM_CATEGORY_ID = "categoryId"
-const val ROUTE_MANAGE_CATEGORY = "manage-category/{${PARAM_CATEGORY_ID}}"
+const val ROUTE_CATEGORY_DETAIL = "category-detail/{${PARAM_CATEGORY_ID}}"
 
-fun buildManageCategoryRoute(categoryId: Int = 0): String {
-    return "manage-category/$categoryId"
+fun buildCategoryDetailRoute(categoryId: Int = 0): String {
+    return "category-detail/$categoryId"
 }
 
 private val arguments = listOf(navArgument(PARAM_CATEGORY_ID) { type = NavType.IntType })
@@ -58,14 +59,14 @@ fun NavBackStackEntry.argumentCategoryId(): Int {
     return arguments?.getInt(PARAM_CATEGORY_ID, 0) ?: 0
 }
 
-fun NavGraphBuilder.manageCategoryRoute(navController: NavController) {
-    composable(ROUTE_MANAGE_CATEGORY, arguments) {
-        ManageCategoryView(navController, categoryId = it.argumentCategoryId())
+fun NavGraphBuilder.categoryDetailRoute(navController: NavController) {
+    composable(ROUTE_CATEGORY_DETAIL, arguments) {
+        CategoryDetailView(navController, categoryId = it.argumentCategoryId())
     }
 }
 
 @Composable
-fun ManageCategoryView(
+fun CategoryDetailView(
     navController: NavController = rememberNavController(),
     categoryId: Int = 0
 ) {
@@ -73,28 +74,30 @@ fun ManageCategoryView(
         navController.navigate(BackViewRoute)
     }
     BackHandler { onBackClick() }
+    val scaffoldState = rememberScaffoldState()
 
-    val manageCategoryViewModel: ManageCategoryViewModel by viewModel {
+    val categoryDetailViewModel: CategoryDetailViewModel by viewModel {
         parametersOf(categoryId)
     }
-    val category by manageCategoryViewModel.categoryStateFlow.collectAsState()
-    val nameError by manageCategoryViewModel.nameErrorStateFlow.collectAsState()
-    val errorState by manageCategoryViewModel.errorStateFlow.collectAsState()
+    val category by categoryDetailViewModel.categoryStateFlow.collectAsState()
+    val nameError by categoryDetailViewModel.nameErrorStateFlow.collectAsState()
+    val errorState by categoryDetailViewModel.errorStateFlow.collectAsState()
 
-    ManageCategoryContent(
+    CategoryDetailContent(
+        scaffoldState = scaffoldState,
         errorState = errorState,
         category = category,
         nameError = nameError,
-        onNameChange = manageCategoryViewModel::setName,
-        onDescriptionChange = manageCategoryViewModel::setDescription,
+        onNameChange = categoryDetailViewModel::setName,
+        onDescriptionChange = categoryDetailViewModel::setDescription,
         onBackClick = onBackClick,
         onDeleteCategory = {
-            manageCategoryViewModel.deleteCategory(it) {
+            categoryDetailViewModel.deleteCategory(it) {
                 onBackClick()
             }
         },
         onDoneClick = {
-            manageCategoryViewModel.saveCategory(it) {
+            categoryDetailViewModel.saveCategory(it) {
                 onBackClick()
             }
         }
@@ -103,7 +106,8 @@ fun ManageCategoryView(
 
 @Preview(showBackground = true)
 @Composable
-fun ManageCategoryContent(
+fun CategoryDetailContent(
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     errorState: Throwable? = null,
     category: Category = Category.dummyInstance(),
     nameError: String? = null,
@@ -113,7 +117,6 @@ fun ManageCategoryContent(
     onDeleteCategory: (Category) -> Unit = {},
     onDoneClick: (Category) -> Unit = {},
 ) {
-    val scaffoldState = rememberScaffoldState()
     var shouldShowConfirmDialog by remember { mutableStateOf(false) }
     Scaffold(
         scaffoldState = scaffoldState,

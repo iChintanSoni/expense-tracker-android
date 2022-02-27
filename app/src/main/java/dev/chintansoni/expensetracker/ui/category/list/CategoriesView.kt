@@ -53,17 +53,17 @@ fun CategoriesView(navController: NavController = rememberNavController()) {
     }
     BackHandler { onBackClick() }
 
-    val manageCategoriesViewModel: CategoriesViewModel by viewModel()
-    val categories by manageCategoriesViewModel.categoryListStateFlow.collectAsState()
+    val categoriesViewModel: CategoriesViewModel by viewModel()
+    val categories by categoriesViewModel.categoryListStateFlow.collectAsState()
     val onCategoryClick: (Category) -> Unit = {
-        navController.navigate(MainRoute.ManageCategoryViewRoute(it.id))
+        navController.navigate(MainRoute.CategoryDetailViewRoute(it.id))
     }
     val onAddClick: () -> Unit = {
-        navController.navigate(MainRoute.ManageCategoryViewRoute(0))
+        navController.navigate(MainRoute.CategoryDetailViewRoute(0))
     }
 
     CategoriesContent(
-        categories,
+        categories = categories,
         onBackClick = onBackClick,
         onAddClick = onAddClick,
         onCategoryClick = onCategoryClick
