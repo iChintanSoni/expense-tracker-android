@@ -3,6 +3,9 @@ package dev.chintansoni.expensetracker.ui.auth.signin
 import dev.chintansoni.expensetracker.base.UiEffect
 import dev.chintansoni.expensetracker.base.UiEvent
 import dev.chintansoni.expensetracker.base.UiState
+import dev.chintansoni.expensetracker.ui.util.isInValidEmail
+import dev.chintansoni.expensetracker.ui.util.validateEmail
+import dev.chintansoni.expensetracker.ui.util.validatePassword
 
 class SignInContract {
 
@@ -47,15 +50,13 @@ class SignInContract {
             "Enter your password"
         else ""
 
-        fun isFormValid(): Boolean = validateEmail().isEmpty() && validatePassword().isEmpty()
-
-        private fun String.isInValidEmail(): Boolean =
-            !android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+        fun isFormStateValid(): Boolean =
+            email.validateEmail().isEmpty() && password.validatePassword().isEmpty()
     }
 
     // Side effects
     sealed class Effect : UiEffect {
-        object Nothing : Effect()
+        object Idle : Effect()
         object NavigateToHome : Effect()
         object NavigateToForgotPassword : Effect()
         object NavigateToSignUp : Effect()

@@ -18,10 +18,20 @@ class SignInViewModel(
 
     override fun handleEvent(event: SignInContract.Event) = when (event) {
         is SignInContract.Event.OnEmailChange -> {
-            setState { copy(email = event.email) }
+            setState {
+                copy(
+                    email = event.email,
+                    emailError = ""
+                )
+            }
         }
         is SignInContract.Event.OnPasswordChange -> {
-            setState { copy(password = event.password) }
+            setState {
+                copy(
+                    password = event.password,
+                    passwordError = ""
+                )
+            }
         }
         SignInContract.Event.OnSignInClick -> {
             performLogin()
@@ -35,13 +45,15 @@ class SignInViewModel(
     }
 
     private fun performLogin() {
-        val emailError = currentState.validateEmail()
-        setState { copy(emailError = emailError) }
 
-        val passwordError = currentState.validatePassword()
-        setState { copy(passwordError = passwordError) }
+        setState {
+            copy(
+                emailError = currentState.validateEmail(),
+                passwordError = currentState.validatePassword()
+            )
+        }
 
-        if (currentState.isFormValid()) {
+        if (currentState.isFormStateValid()) {
             viewModelScope.launch {
                 setState { copy(isLoading = true) }
                 delay(1500)

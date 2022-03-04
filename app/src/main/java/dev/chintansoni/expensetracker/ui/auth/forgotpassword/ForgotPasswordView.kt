@@ -4,28 +4,27 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
-import dev.chintansoni.expensetracker.ui.navigator.navigate
+import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.Typography
+import dev.chintansoni.expensetracker.ui.util.SuccessFailureView
+import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_FORGOT_PASSWORD = "ForgotPassword"
@@ -33,67 +32,83 @@ const val ROUTE_FORGOT_PASSWORD = "ForgotPassword"
 @Composable
 fun ForgotPasswordScreen(navController: NavController = rememberNavController()) {
 
-    val forgotPasswordViewModel: ForgotPasswordViewModel by viewModel()
+    val viewModel: ForgotPasswordViewModel by viewModel()
+    val state by viewModel.uiState.collectAsState()
+    val effect by viewModel.effect.collectAsState(initial = ForgotPasswordContract.Effect.Idle)
 
-    val email: String by forgotPasswordViewModel.emailSF.collectAsState()
-    val onEmailChange: (String) -> Unit = {}
+    LaunchedEffect(key1 = effect) {
+        when (effect) {
+            is ForgotPasswordContract.Effect.NavigateBack -> {
+                navController.navigateBack()
+            }
+            else -> {}
+        }
+    }
 
-    val sendLinkStatus: SendLinkStatus by forgotPasswordViewModel.sendLinkStatusSF.collectAsState()
+    val onEmailChange: (String) -> Unit = {
+        viewModel.setEvent(ForgotPasswordContract.Event.OnEmailChange(it))
+    }
 
     val onSendLinkClick: () -> Unit = {
-        forgotPasswordViewModel.sendLink()
+        viewModel.setEvent(ForgotPasswordContract.Event.OnSendLinkClick)
     }
 
     val onBackClick: () -> Unit = {
-        navController.navigate(BackViewRoute)
+        viewModel.setEvent(ForgotPasswordContract.Event.OnBackClick)
     }
 
     val onTryAgainClick: () -> Unit = {
-        forgotPasswordViewModel.resetSendLinkStatus()
+        viewModel.setEvent(ForgotPasswordContract.Event.OnTryAgainClick)
     }
 
     ForgotPasswordContent(
-        email = email,
+        state = state,
         onEmailChange = onEmailChange,
         onSendLinkClick = onSendLinkClick,
         onBackClick = onBackClick,
         onTryAgainClick = onTryAgainClick,
-        sendLinkStatus = sendLinkStatus
     )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ForgotPasswordContent(
-    email: String = "",
+private fun ForgotPasswordContent(
+    state: ForgotPasswordContract.State = ForgotPasswordContract.State.default(),
     onEmailChange: (String) -> Unit = {},
     onSendLinkClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onTryAgainClick: () -> Unit = {},
-    sendLinkStatus: SendLinkStatus = SendLinkStatus.Default
+    onTryAgainClick: () -> Unit = {}
 ) {
-    Crossfade(targetState = sendLinkStatus) {
+    Crossfade(targetState = state.forgotPasswordApiState) {
         when (it) {
-            is SendLinkStatus.Success -> Success(onBackClick)
-            is SendLinkStatus.Failure -> Failure(onTryAgainClick)
-            else -> ForgotPasswordForm(
-                email = email,
+            is ForgotPasswordContract.ForgotPasswordApiState.Success -> SuccessFailureView(
+                title = "Success",
+                description = "Password reset has been sent to your email",
+                actionLabel = "Back to login",
+                onActionClick = onBackClick
+            )
+            is ForgotPasswordContract.ForgotPasswordApiState.Failure -> SuccessFailureView(
+                title = "Failure",
+                description = "Email not registered, please try again",
+                actionLabel = "Try again",
+                onActionClick = onTryAgainClick
+            )
+            else -> FormView(
+                state = state,
                 onEmailChange = onEmailChange,
                 onSendLinkClick = onSendLinkClick,
-                onBackClick = onBackClick,
-                sendLinkStatus = sendLinkStatus
+                onBackClick = onBackClick
             )
         }
     }
 }
 
 @Composable
-fun ForgotPasswordForm(
-    email: String = "",
+private fun FormView(
+    state: ForgotPasswordContract.State = ForgotPasswordContract.State.default(),
     onEmailChange: (String) -> Unit = {},
     onSendLinkClick: () -> Unit = {},
-    onBackClick: () -> Unit = {},
-    sendLinkStatus: SendLinkStatus = SendLinkStatus.Default
+    onBackClick: () -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -108,81 +123,41 @@ fun ForgotPasswordForm(
             style = Typography.h5,
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier
                 .padding(8.dp),
-            value = email,
-            enabled = sendLinkStatus != SendLinkStatus.InProgress,
-            singleLine = true,
+            value = state.email,
+            errorText = state.emailError,
+            enabled = state.forgotPasswordApiState.isNotInProgress(),
             onValueChange = onEmailChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            label = { Text("Email") }
+            label = "Email"
         )
 
         Button(
             onClick = onSendLinkClick,
-            enabled = sendLinkStatus != SendLinkStatus.InProgress,
+            enabled = state.forgotPasswordApiState.isNotInProgress(),
             modifier = Modifier
                 .padding(12.dp)
                 .width(280.dp)
         ) {
             Text(
-                if (sendLinkStatus != SendLinkStatus.InProgress) "Send Link" else "Sending Link",
+                text = if (state.forgotPasswordApiState.isNotInProgress()) "Send Link" else "Sending Link",
                 modifier = Modifier.padding(4.dp)
             )
         }
 
         TextButton(
             onClick = onBackClick,
-            enabled = sendLinkStatus != SendLinkStatus.InProgress,
+            enabled = state.forgotPasswordApiState.isNotInProgress(),
             modifier = Modifier
                 .padding(12.dp)
                 .width(280.dp)
         ) {
-            Text("Go back", modifier = Modifier.padding(4.dp))
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Success(onBackClick: () -> Unit = {}) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Password reset link has been sent successfully",
-            style = Typography.h5,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(0.8f)
-        )
-        TextButton(onClick = onBackClick) {
-            Text(text = "Go to Login")
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun Failure(onTryAgainClick: () -> Unit = {}) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .width(280.dp)
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = "Error sending email",
-            style = Typography.h5,
-        )
-        TextButton(onClick = onTryAgainClick) {
-            Text(text = "Try Again")
+            Text(
+                text = "Go back",
+                modifier = Modifier.padding(4.dp)
+            )
         }
     }
 }

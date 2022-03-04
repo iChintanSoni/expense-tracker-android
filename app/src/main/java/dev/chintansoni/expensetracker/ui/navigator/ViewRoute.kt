@@ -20,3 +20,7 @@ fun NavController.navigate(viewRoute: ViewRoute) {
         navigate(viewRoute.route, viewRoute.navOptions)
     }
 }
+
+fun NavController.navigateBack() {
+    navigate(BackViewRoute)
+}

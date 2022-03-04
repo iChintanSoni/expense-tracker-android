@@ -147,7 +147,7 @@ fun TransactionItem(
         }
         Text(
             text = "\u20B9 " + transaction.amount,
-            style = Typography.overline,
+            style = Typography.h6,
             modifier = Modifier
                 .padding(
                     horizontal = 16.dp,

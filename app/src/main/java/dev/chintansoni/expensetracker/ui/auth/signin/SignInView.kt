@@ -36,11 +36,9 @@ const val ROUTE_SIGN_IN = "SignIn"
 @Composable
 fun SignInView(navController: NavController = rememberNavController()) {
 
-    val signInViewModel by viewModel<SignInViewModel>()
-
-    val state by signInViewModel.uiState.collectAsState()
-
-    val effect by signInViewModel.effect.collectAsState(initial = SignInContract.Effect.Nothing)
+    val viewModel by viewModel<SignInViewModel>()
+    val state by viewModel.uiState.collectAsState()
+    val effect by viewModel.effect.collectAsState(initial = SignInContract.Effect.Idle)
 
     LaunchedEffect(key1 = effect) {
         when (effect) {
@@ -58,22 +56,22 @@ fun SignInView(navController: NavController = rememberNavController()) {
     }
 
     val onEmailChange: (String) -> Unit = {
-        signInViewModel.setEvent(SignInContract.Event.OnEmailChange(it))
+        viewModel.setEvent(SignInContract.Event.OnEmailChange(it))
     }
     val onPasswordChange: (String) -> Unit = {
-        signInViewModel.setEvent(SignInContract.Event.OnPasswordChange(it))
+        viewModel.setEvent(SignInContract.Event.OnPasswordChange(it))
     }
 
     val onSignInClick: () -> Unit = {
-        signInViewModel.setEvent(SignInContract.Event.OnSignInClick)
+        viewModel.setEvent(SignInContract.Event.OnSignInClick)
     }
 
     val onForgotPasswordClick: () -> Unit = {
-        navController.navigate(MainRoute.ForgotPasswordViewRoute)
+        viewModel.setEvent(SignInContract.Event.OnForgotPasswordClick)
     }
 
     val onSignUpClick: () -> Unit = {
-        navController.navigate(MainRoute.SignUpViewRoute)
+        viewModel.setEvent(SignInContract.Event.OnSignUpClick)
     }
 
     SignInContent(
