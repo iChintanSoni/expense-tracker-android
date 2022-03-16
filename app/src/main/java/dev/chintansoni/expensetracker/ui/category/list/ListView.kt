@@ -16,6 +16,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -28,9 +29,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.domain.model.Category
-import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
+import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.NavigateNextIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
@@ -48,32 +49,47 @@ fun NavGraphBuilder.categoriesRoute(navController: NavController) {
 @Composable
 fun CategoriesView(navController: NavController = rememberNavController()) {
 
+    val viewModel: ListViewModel by viewModel()
+    val state by viewModel.uiState.collectAsState()
+    val effect by viewModel.effect.collectAsState(initial = ListViewContract.Effect.Nothing)
+
+    LaunchedEffect(key1 = effect, block = {
+        when (effect) {
+            is ListViewContract.Effect.NavigateToDetail -> {
+                navController.navigate(MainRoute.CategoryDetailViewRoute((effect as ListViewContract.Effect.NavigateToDetail).id))
+            }
+            is ListViewContract.Effect.NavigateBack -> {
+                navController.navigateBack()
+            }
+            else -> {}
+        }
+    })
+
     val onBackClick: () -> Unit = {
-        navController.navigate(BackViewRoute)
+        viewModel.setEvent(ListViewContract.Event.NavigateBack)
     }
     BackHandler { onBackClick() }
 
-    val categoriesViewModel: CategoriesViewModel by viewModel()
-    val categories by categoriesViewModel.categoryListStateFlow.collectAsState()
     val onCategoryClick: (Category) -> Unit = {
-        navController.navigate(MainRoute.CategoryDetailViewRoute(it.id))
+        viewModel.setEvent(ListViewContract.Event.NavigateToDetail(it.id))
     }
     val onAddClick: () -> Unit = {
         navController.navigate(MainRoute.CategoryDetailViewRoute(0))
     }
 
     CategoriesContent(
-        categories = categories,
+        categories = state.categoryList,
         onBackClick = onBackClick,
         onAddClick = onAddClick,
         onCategoryClick = onCategoryClick
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
 fun CategoriesContent(
-    categories: List<Category> = listOf(Category.dummyInstance()),
+    categories: List<Category> = listOf(Category.dummyInstance(), Category.dummyInstance()),
     onBackClick: () -> Unit = {},
     onAddClick: () -> Unit = {},
     onCategoryClick: (Category) -> Unit = {}
@@ -82,8 +98,11 @@ fun CategoriesContent(
         modifier = Modifier.fillMaxSize(),
         topBar = { MainToolbar("Categories", onBackClick) },
         floatingActionButton = {
-            Fab(AddIcon) { onAddClick() }
-        }
+            Fab(
+                icon = AddIcon,
+                onClick = onAddClick
+            )
+        },
     ) {
         LazyColumn {
             itemsIndexed(categories) { index, category ->
@@ -93,7 +112,7 @@ fun CategoriesContent(
                     onCategoryClick = onCategoryClick
                 )
                 if (index < categories.lastIndex)
-                    Divider()
+                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
             }
         }
     }
@@ -114,7 +133,6 @@ fun CategoryItem(
     ) {
         Column(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
                 .weight(1f)
         ) {
             Text(

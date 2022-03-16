@@ -1,11 +1,10 @@
 package dev.chintansoni.expensetracker.ui.auth.signup
 
-import androidx.lifecycle.viewModelScope
 import dev.chintansoni.expensetracker.base.BaseViewModel
 import dev.chintansoni.expensetracker.ui.util.validateEmail
 import dev.chintansoni.expensetracker.ui.util.validatePassword
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
 class SignUpViewModel :
@@ -55,7 +54,7 @@ class SignUpViewModel :
         }
 
         if (currentState.isStateFormValid()) {
-            viewModelScope.launch {
+            launchInIO {
                 setState { copy(signUpApiState = SignUpContract.SignUpApiState.InProgress) }
                 delay(1500)
                 val result = Random.nextBoolean()
@@ -74,5 +73,9 @@ class SignUpViewModel :
                 }
             }
         }
+    }
+
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
+
     }
 }

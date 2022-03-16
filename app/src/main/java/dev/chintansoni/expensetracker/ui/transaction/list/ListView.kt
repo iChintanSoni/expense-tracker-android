@@ -4,20 +4,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -40,31 +34,43 @@ import org.koin.androidx.compose.viewModel
 
 @Composable
 fun TransactionsView(mainNavController: NavController) {
+    val viewModel: ListViewModel by viewModel()
+    val state by viewModel.uiState.collectAsState()
+    val effect by viewModel.effect.collectAsState(initial = ListViewContract.Effect.Nothing)
+
     val onTransactionClick: (TransactionDetail) -> Unit = {
-        mainNavController.navigate(MainRoute.TransactionDetailViewRoute(it.id))
+        viewModel.setEvent(ListViewContract.Event.OnTransactionClick(transactionId = it.id))
     }
-    val transactionsViewModel: TransactionsViewModel by viewModel()
-    val transactions: List<TransactionDetail> by transactionsViewModel.transactionsFlow.collectAsState(
-        emptyList()
-    )
-    TransactionsContent(transactions, onTransactionClick)
+
+    LaunchedEffect(key1 = effect, block = {
+        when (effect) {
+            is ListViewContract.Effect.NavigateToDetail -> mainNavController.navigate(
+                MainRoute.TransactionDetailViewRoute(
+                    (effect as ListViewContract.Effect.NavigateToDetail).transactionId
+                )
+            )
+            ListViewContract.Effect.Nothing -> {}
+        }
+    })
+    TransactionsContent(state, onTransactionClick)
 }
 
+@Preview(showBackground = true)
 @Composable
-fun TransactionsContent(
-    transactions: List<TransactionDetail> = emptyList(),
+private fun TransactionsContent(
+    state: ListViewContract.State = ListViewContract.State.dummy(),
     onTransactionClick: (TransactionDetail) -> Unit = {}
 ) {
-    if (transactions.isEmpty()) {
+    if (state.transactionDetailList.isEmpty()) {
         NoTransactionsAvailable()
     } else {
-        TransactionList(transactions, onTransactionClick)
+        TransactionList(state.transactionDetailList, onTransactionClick)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun NoTransactionsAvailable() {
+private fun NoTransactionsAvailable() {
     Column(
         modifier = Modifier
             .fillMaxSize()

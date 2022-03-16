@@ -9,11 +9,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class CategoryRepositoryImpl(private val categoryDao: CategoryDao) :
-    CategoryRepository {
+class CategoryRepositoryImpl(
+    private val categoryDao: CategoryDao
+) : CategoryRepository {
 
     override fun getAllCategoriesFlow(): Flow<List<Category>> {
         return categoryDao.getAllFlow().distinctUntilChanged().map { list ->
+            println()
             list.map { categoryEntity ->
                 categoryEntity.toDomainModel()
             }
@@ -24,6 +26,10 @@ class CategoryRepositoryImpl(private val categoryDao: CategoryDao) :
         return categoryDao.getByIdFlow(id).distinctUntilChanged().map { categoryEntity ->
             categoryEntity?.toDomainModel()
         }
+    }
+
+    override suspend fun getCategoryById(id: Long): Category? {
+        return categoryDao.getById(id)?.toDomainModel()
     }
 
     override suspend fun getCategoryByName(name: String): Category? {
@@ -46,8 +52,8 @@ class CategoryRepositoryImpl(private val categoryDao: CategoryDao) :
         return categoryDao.deleteCategory(category.toDBModel())
     }
 
-    override suspend fun upsertCategory(category: Category) {
-        categoryDao.upsertCategory(category.toDBModel())
+    override suspend fun upsertCategory(category: Category): Long {
+        return categoryDao.upsertCategory(category.toDBModel())
     }
 
     override suspend fun clear() {

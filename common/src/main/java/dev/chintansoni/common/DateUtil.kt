@@ -1,11 +1,10 @@
 package dev.chintansoni.common
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 typealias DateTime = Instant
 
@@ -40,4 +39,10 @@ fun Long?.toDateTime(): DateTime = if (this == null) {
     currentDateTime()
 } else {
     DateTime.fromEpochMilliseconds(this)
+}
+
+fun Long?.toPrintableDate(): String {
+    val simpleDateFormat = SimpleDateFormat.getDateInstance(DateFormat.LONG)
+    val date = Date(this ?: currentDateTimeInMillis())
+    return simpleDateFormat.format(date)
 }

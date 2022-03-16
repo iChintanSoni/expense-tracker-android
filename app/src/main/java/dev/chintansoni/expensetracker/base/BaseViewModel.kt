@@ -2,15 +2,23 @@ package dev.chintansoni.expensetracker.base
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 abstract class BaseViewModel<Event : UiEvent, State : UiState, Effect : UiEffect> : ViewModel() {
+
+    private val coroutineExceptionHandler =
+        CoroutineExceptionHandler { coroutineContext, throwable ->
+            handleException(
+                coroutineContext = coroutineContext,
+                throwable = throwable
+            )
+        }
 
     // Create Initial State of View
     private val initialState: State by lazy { createInitialState() }
@@ -34,7 +42,7 @@ abstract class BaseViewModel<Event : UiEvent, State : UiState, Effect : UiEffect
      */
     fun setEvent(event: Event) {
         val newEvent = event
-        viewModelScope.launch { _event.emit(newEvent) }
+        launchInIO { _event.emit(newEvent) }
     }
 
     /**
@@ -50,7 +58,7 @@ abstract class BaseViewModel<Event : UiEvent, State : UiState, Effect : UiEffect
      */
     protected fun setEffect(builder: () -> Effect) {
         val effectValue = builder()
-        viewModelScope.launch { _effect.send(effectValue) }
+        launchInIO { _effect.send(effectValue) }
     }
 
     init {
@@ -61,7 +69,7 @@ abstract class BaseViewModel<Event : UiEvent, State : UiState, Effect : UiEffect
      * Start listening to Event
      */
     private fun subscribeEvents() {
-        viewModelScope.launch {
+        launchInIO {
             event.collect {
                 handleEvent(it)
             }
@@ -72,4 +80,13 @@ abstract class BaseViewModel<Event : UiEvent, State : UiState, Effect : UiEffect
      * Handle each event
      */
     abstract fun handleEvent(event: Event)
+
+    /**
+     * Handle each event
+     */
+    abstract fun handleException(coroutineContext: CoroutineContext, throwable: Throwable)
+
+    fun launchInIO(block: suspend CoroutineScope.() -> Unit) {
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) { block() }
+    }
 }

@@ -2,17 +2,14 @@ package dev.chintansoni.expensetracker.ui.home.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,19 +28,34 @@ const val ROUTE_PROFILE = "profile"
 @Composable
 fun ProfileView(navController: NavController = rememberNavController()) {
 
-    val profileViewModel by viewModel<ProfileViewModel>()
+    val viewModel by viewModel<ProfileViewModel>()
 
-    val onLogout: () -> Unit = {
-        profileViewModel.logout {
-            navController.navigate(MainRoute.HomeToSignInViewRoute)
+    val state by viewModel.uiState.collectAsState()
+
+    val effect by viewModel.effect.collectAsState(initial = ProfileViewContract.Effect.Nothing)
+    LaunchedEffect(key1 = effect, block = {
+        when (effect) {
+            ProfileViewContract.Effect.NavigateToSignIn -> {
+                navController.navigate(MainRoute.HomeToSignInViewRoute)
+            }
+            else -> {}
         }
+    })
+    val onLogout: () -> Unit = {
+        viewModel.setEvent(ProfileViewContract.Event.OnLogoutClick)
     }
-    ProfileContent(onLogout)
+    ProfileContent(
+        state = state,
+        onLogout = onLogout
+    )
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ProfileContent(onLogout: () -> Unit = {}) {
+fun ProfileContent(
+    state: ProfileViewContract.State = ProfileViewContract.State.default(),
+    onLogout: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

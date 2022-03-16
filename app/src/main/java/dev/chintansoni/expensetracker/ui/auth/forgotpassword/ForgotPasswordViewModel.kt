@@ -1,9 +1,8 @@
 package dev.chintansoni.expensetracker.ui.auth.forgotpassword
 
-import androidx.lifecycle.viewModelScope
 import dev.chintansoni.expensetracker.base.BaseViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
 class ForgotPasswordViewModel :
@@ -40,7 +39,7 @@ class ForgotPasswordViewModel :
                 emailError = currentState.validateEmail()
             )
         }
-        viewModelScope.launch {
+        launchInIO {
             if (currentState.isFormStateValid()) {
                 setState { copy(forgotPasswordApiState = ForgotPasswordContract.ForgotPasswordApiState.InProgress) }
                 delay(1500)
@@ -51,5 +50,9 @@ class ForgotPasswordViewModel :
                 }
             }
         }
+    }
+
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
+
     }
 }

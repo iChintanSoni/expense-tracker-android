@@ -9,6 +9,8 @@ interface CategoryRepository {
 
     fun getCategoryByIdFlow(id: Int): Flow<Category?>
 
+    suspend fun getCategoryById(id: Long): Category?
+
     suspend fun getCategoryByName(name: String): Category?
 
     suspend fun addCategory(category: Category): Long
@@ -19,7 +21,7 @@ interface CategoryRepository {
 
     suspend fun deleteCategory(category: Category): Int
 
-    suspend fun upsertCategory(category: Category)
+    suspend fun upsertCategory(category: Category): Long
 
     suspend fun clear()
 }

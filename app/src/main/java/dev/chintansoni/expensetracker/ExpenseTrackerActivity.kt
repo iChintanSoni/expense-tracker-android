@@ -16,8 +16,8 @@ import dev.chintansoni.expensetracker.ui.auth.authRoute
 import dev.chintansoni.expensetracker.ui.category.detail.categoryDetailRoute
 import dev.chintansoni.expensetracker.ui.category.list.categoriesRoute
 import dev.chintansoni.expensetracker.ui.home.homeRoute
+import dev.chintansoni.expensetracker.ui.home.setting.settingRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
-import dev.chintansoni.expensetracker.ui.setting.settingRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
 import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 

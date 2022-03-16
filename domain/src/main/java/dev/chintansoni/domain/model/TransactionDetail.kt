@@ -6,7 +6,7 @@ data class TransactionDetail(
     val id: Long,
     val amount: Float,
     val note: String?,
-    val category: Int,
+    val category: Long,
     val date: Long,
     val createdDate: Long,
     val updatedDate: Long?,
@@ -16,6 +16,15 @@ data class TransactionDetail(
     val canBeDeleted: Boolean
 ) {
     companion object {
+
+        fun dummyList(): List<TransactionDetail> {
+            val transactionDetailList = mutableListOf<TransactionDetail>()
+            repeat(10) {
+                transactionDetailList.add(dummyInstance())
+            }
+            return transactionDetailList
+        }
+
         fun dummyInstance() = TransactionDetail(
             id = (0..100).random().toLong(),
             amount = (0..100).random().toFloat(),
@@ -29,6 +38,28 @@ data class TransactionDetail(
             description = "",
             canBeDeleted = false
         )
+
+        fun defaultInstance() = TransactionDetail(
+            id = 0L,
+            amount = 0f,
+            note = "",
+            category = 0,
+            date = currentDateTimeInMillis(),
+            createdDate = currentDateTimeInMillis(),
+            updatedDate = null,
+            deletedDate = null,
+            name = "",
+            description = "",
+            canBeDeleted = false
+        )
+    }
+
+    fun printableAmount(): String {
+        return if (amount > 0.0) amount.toString() else ""
+    }
+
+    fun isValid(): Boolean {
+        return amount > 0.0 && category > 0 && date > 0
     }
 }
 

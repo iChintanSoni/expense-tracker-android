@@ -1,40 +1,30 @@
 package dev.chintansoni.database
 
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import org.koin.dsl.module
+
+private val daoModule = module {
+    single {
+        getDatabase().transactionDao()
+    }
+    single {
+        getDatabase().transactionDetailViewDao()
+    }
+    single {
+        getDatabase().categoryDao()
+    }
+}
 
 val databaseModule = module {
     single {
         provideExpenseTrackerDatabase(get())
     }
-    single {
-        getDatabase().transactionDao()
-    }
-    single {
-        getDatabase().transactionDetailViewDao()
-    }
-    single {
-        getDatabase().categoryDao()
-    }
-}
+}.plus(daoModule)
 
 val testDatabaseModule = module {
     single {
         provideTestExpenseTrackerDatabase(get())
     }
-    single {
-        getDatabase().transactionDetailViewDao()
-    }
-    single {
-        getDatabase().transactionDao()
-    }
-    single {
-        getDatabase().categoryDao()
-    }
-}
+}.plus(daoModule)
 
 private fun Scope.getDatabase() = get<ExpenseTrackerDatabase>()
-
-val inMemoryDatabaseQualifier = named("InMemoryDatabase")
-private fun Scope.getInMemoryDatabase() = get<ExpenseTrackerDatabase>(inMemoryDatabaseQualifier)

@@ -1,12 +1,11 @@
 package dev.chintansoni.expensetracker.ui.auth.signin
 
-import androidx.lifecycle.viewModelScope
-import dev.chintansoni.domain.model.generateDefaultCategories
+import dev.chintansoni.domain.model.Category
 import dev.chintansoni.domain.repository.CategoryRepository
 import dev.chintansoni.domain.repository.UserRepository
 import dev.chintansoni.expensetracker.base.BaseViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class SignInViewModel(
     private val userRepository: UserRepository,
@@ -54,7 +53,7 @@ class SignInViewModel(
         }
 
         if (currentState.isFormStateValid()) {
-            viewModelScope.launch {
+            launchInIO {
                 setState { copy(isLoading = true) }
                 delay(1500)
                 userRepository.setUserLoggedIn(true)
@@ -66,7 +65,12 @@ class SignInViewModel(
     }
 
     private suspend fun insertDefaultCategories() {
-        val defaultCategories = generateDefaultCategories()
+        val defaultCategories = Category.generateDefaultCategories()
+        println(defaultCategories)
         categoryRepository.addCategories(defaultCategories)
+    }
+
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
+
     }
 }
