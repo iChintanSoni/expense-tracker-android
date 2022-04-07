@@ -8,4 +8,6 @@ interface TransactionDetailRepository {
     fun getAllTransactionsFlow(): Flow<List<TransactionDetail>>
 
     fun getTransactionByIdFlow(id: Long): Flow<TransactionDetail?>
+
+    fun getBetweenDates(startDate: Long, endDate: Long): Flow<List<TransactionDetail>>
 }

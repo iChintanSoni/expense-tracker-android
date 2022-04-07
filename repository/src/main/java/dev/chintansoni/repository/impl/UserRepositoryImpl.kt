@@ -1,4 +1,4 @@
-package dev.chintansoni.repository
+package dev.chintansoni.repository.impl
 
 import dev.chintansoni.domain.repository.UserRepository
 import dev.chintansoni.preference.LoginPreferenceDataStore

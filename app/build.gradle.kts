@@ -7,11 +7,12 @@ val targetSDKVersion: String by project
 
 plugins {
     id("com.android.application")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
 }
 
 android {
-    compileSdk = compileSDKVersion.toInt()
+    compileSdkPreview = compileSDKVersion
 
     defaultConfig {
         applicationId = "dev.chintansoni.expensetracker"
@@ -58,9 +59,9 @@ dependencies {
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha04")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha05")
     implementation("androidx.activity:activity-compose:1.5.0-alpha03")
-    implementation("androidx.navigation:navigation-compose:2.5.0-alpha03")
+    implementation("androidx.navigation:navigation-compose:2.5.0-alpha02")
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation(project(":repository"))
@@ -85,5 +86,5 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-navigation:$koinVersion")
     testImplementation("io.insert-koin:koin-test:$koinVersion")
 
-    implementation("androidx.core:core-splashscreen:1.0.0-beta01")
+    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
 }

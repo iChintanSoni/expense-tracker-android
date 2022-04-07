@@ -104,7 +104,7 @@ class DetailViewModel(
 
     private fun handleCategoryChange(category: Long) {
         setState {
-            copy(transactionDetail = transactionDetail.copy(category = category))
+            copy(transactionDetail = transactionDetail.copy(categoryId = category))
         }
     }
 

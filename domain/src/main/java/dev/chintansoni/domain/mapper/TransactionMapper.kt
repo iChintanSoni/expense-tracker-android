@@ -4,4 +4,13 @@ import dev.chintansoni.domain.model.Transaction
 import dev.chintansoni.domain.model.TransactionDetail
 
 fun TransactionDetail.toTransaction() =
-    Transaction(id, amount, note, category, date, createdDate, updatedDate, deletedDate)
+    Transaction(
+        id = id,
+        amount = amount,
+        note = note,
+        category = categoryId,
+        date = date,
+        createdDate = createdDate,
+        updatedDate = updatedDate,
+        deletedDate = deletedDate
+    )

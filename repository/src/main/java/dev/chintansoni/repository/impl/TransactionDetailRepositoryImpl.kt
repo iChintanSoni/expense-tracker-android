@@ -1,4 +1,4 @@
-package dev.chintansoni.repository
+package dev.chintansoni.repository.impl
 
 import dev.chintansoni.database.view.transactiondetail.TransactionDetailDao
 import dev.chintansoni.domain.model.TransactionDetail
@@ -23,4 +23,12 @@ class TransactionDetailRepositoryImpl(
         transactionDetailDao.getByIdFlow(id).distinctUntilChanged().map { transactionDetailView ->
             transactionDetailView?.toDomainModel()
         }
+
+    override fun getBetweenDates(startDate: Long, endDate: Long): Flow<List<TransactionDetail>> {
+        return transactionDetailDao.getBetweenDates(
+            startDateTime = startDate, endDateTime = endDate
+        ).distinctUntilChanged().map { transactionDetailViewList ->
+            transactionDetailViewList.map { transactionDetailView -> transactionDetailView.toDomainModel() }
+        }
+    }
 }

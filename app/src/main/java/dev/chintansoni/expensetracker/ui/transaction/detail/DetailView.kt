@@ -2,24 +2,61 @@ package dev.chintansoni.expensetracker.ui.transaction.detail
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.common.*
+import androidx.navigation.navArgument
+import dev.chintansoni.common.currentDateTimeInMillis
+import dev.chintansoni.common.dateToDateTime
+import dev.chintansoni.common.getDay
+import dev.chintansoni.common.getMonth
+import dev.chintansoni.common.getYear
+import dev.chintansoni.common.toDateTime
+import dev.chintansoni.common.toPrintableDate
 import dev.chintansoni.expensetracker.R
 import dev.chintansoni.expensetracker.ui.category.dropdown.CategoryView
 import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
-import dev.chintansoni.expensetracker.ui.theme.*
+import dev.chintansoni.expensetracker.ui.theme.BackIcon
+import dev.chintansoni.expensetracker.ui.theme.DeleteIcon
+import dev.chintansoni.expensetracker.ui.theme.DoneIcon
+import dev.chintansoni.expensetracker.ui.theme.DrawableIcon
+import dev.chintansoni.expensetracker.ui.theme.DropDownIcon
+import dev.chintansoni.expensetracker.ui.theme.EditIcon
+import dev.chintansoni.expensetracker.ui.theme.EventIcon
+import dev.chintansoni.expensetracker.ui.theme.NoteIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
@@ -32,7 +69,7 @@ fun transactionDetailRoute(transactionId: Long): String {
     return "transactionDetail/$transactionId"
 }
 
-val arguments = listOf(navArgument(PARAM_TRANSACTION_DETAIL) {
+val arguments = listOf(navArgument(name = PARAM_TRANSACTION_DETAIL) {
     type = NavType.LongType
     defaultValue = 0L
 })
@@ -192,7 +229,7 @@ fun AddEditExpenseContent(
 
                 CategoryView(
                     enabled = state.isEditMode,
-                    selectedCategory = state.transactionDetail.category,
+                    selectedCategory = state.transactionDetail.categoryId,
                     onCategorySelected = onCategorySelected,
                     categories = state.categories
                 )
@@ -262,7 +299,7 @@ fun AddEditExpenseContent(
 @Composable
 fun RowScope.DatePicker(
     enabled: Boolean = true,
-    selectedDateTime: Long = currentDateTime().toEpochMilliseconds(),
+    selectedDateTime: Long = currentDateTimeInMillis(),
     onDateSelected: (Long) -> Unit = {}
 ) {
 

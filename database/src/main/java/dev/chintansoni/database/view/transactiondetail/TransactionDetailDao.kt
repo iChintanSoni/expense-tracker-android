@@ -12,4 +12,10 @@ interface TransactionDetailDao {
 
     @Query("SELECT * FROM TransactionDetailView WHERE id = :id LIMIT 1")
     fun getByIdFlow(id: Long): Flow<TransactionDetailView?>
+
+    @Query("SELECT * FROM TransactionDetailView where date BETWEEN :startDateTime AND :endDateTime")
+    fun getBetweenDates(
+        startDateTime: Long,
+        endDateTime: Long
+    ): Flow<List<TransactionDetailView>>
 }

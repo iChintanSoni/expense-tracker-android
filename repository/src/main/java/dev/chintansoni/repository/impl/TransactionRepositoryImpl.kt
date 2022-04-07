@@ -1,4 +1,4 @@
-package dev.chintansoni.repository
+package dev.chintansoni.repository.impl
 
 import dev.chintansoni.database.entity.transaction.TransactionDao
 import dev.chintansoni.domain.model.Transaction

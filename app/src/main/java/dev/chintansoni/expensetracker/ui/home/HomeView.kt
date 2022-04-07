@@ -3,7 +3,12 @@ package dev.chintansoni.expensetracker.ui.home
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -19,15 +24,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.home.chart.ChartView
-import dev.chintansoni.expensetracker.ui.home.chart.ROUTE_CHART
+import dev.chintansoni.expensetracker.ui.home.analytics.AnalyticsView
+import dev.chintansoni.expensetracker.ui.home.analytics.ROUTE_CHART
 import dev.chintansoni.expensetracker.ui.home.list.ListView
 import dev.chintansoni.expensetracker.ui.home.list.ROUTE_LIST
 import dev.chintansoni.expensetracker.ui.home.profile.ProfileView
 import dev.chintansoni.expensetracker.ui.home.profile.ROUTE_PROFILE
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
-import dev.chintansoni.expensetracker.ui.theme.*
+import dev.chintansoni.expensetracker.ui.theme.AddIcon
+import dev.chintansoni.expensetracker.ui.theme.ChartIcon
+import dev.chintansoni.expensetracker.ui.theme.ListIcon
+import dev.chintansoni.expensetracker.ui.theme.PersonIcon
+import dev.chintansoni.expensetracker.ui.theme.SettingIcon
 import dev.chintansoni.expensetracker.ui.util.Fab
 
 const val ROUTE_HOME = "home"
@@ -141,7 +150,7 @@ fun NavigationGraph(
 }
 
 fun NavGraphBuilder.homeContentRoute(mainNavController: NavController) {
-    composable(NavItem.ChartNavItem.route) { ChartView() }
+    composable(NavItem.ChartNavItem.route) { AnalyticsView() }
     composable(NavItem.ListNavItem.route) { ListView(mainNavController) }
     composable(NavItem.ProfileNavItem.route) { ProfileView(mainNavController) }
 }
