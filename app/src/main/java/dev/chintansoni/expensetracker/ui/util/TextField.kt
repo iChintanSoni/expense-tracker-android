@@ -19,12 +19,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextFieldWithError(
     modifier: Modifier = Modifier,
-    value: String = "",
-    label: String = "",
+    value: String = "Value",
+    label: String = "Label",
     enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null,
     onValueChange: (String) -> Unit = {},
-    errorText: String? = null,
+    errorText: String? = "Error Text",
     singleLine: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
     visualTransformation: VisualTransformation = VisualTransformation.None
@@ -44,7 +44,7 @@ fun TextFieldWithError(
         )
         AnimatedVisibility(visible = !errorText.isNullOrEmpty()) {
             Text(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(horizontal = 8.dp),
                 text = errorText!!,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,

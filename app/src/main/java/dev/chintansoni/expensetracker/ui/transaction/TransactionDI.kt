@@ -1,21 +1,22 @@
 package dev.chintansoni.expensetracker.ui.transaction
 
-import dev.chintansoni.expensetracker.ui.transaction.detail.TransactionDetailViewModel
-import dev.chintansoni.expensetracker.ui.transaction.list.TransactionsViewModel
+import dev.chintansoni.expensetracker.ui.transaction.detail.DetailViewModel
+import dev.chintansoni.expensetracker.ui.transaction.list.ListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val transactionModule = module {
 
     viewModel {
-        TransactionsViewModel(
-            transactionRepository = get()
+        ListViewModel(
+            transactionDetailRepository = get()
         )
     }
 
     viewModel { (transactionId: Long) ->
-        TransactionDetailViewModel(
+        DetailViewModel(
             transactionId = transactionId,
+            transactionDetailRepository = get(),
             transactionRepository = get(),
             categoryRepository = get()
         )

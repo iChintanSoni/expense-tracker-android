@@ -7,12 +7,14 @@ import androidx.room.DatabaseView
         "transactionEntity.id," +
         "transactionEntity.amount," +
         "transactionEntity.note," +
-        "transactionEntity.category," +
         "transactionEntity.date," +
         "transactionEntity.createdDate," +
-        "categoryEntity.name," +
-        "categoryEntity.description," +
-        "categoryEntity.canBeDeleted" +
+        "transactionEntity.updatedDate," +
+        "transactionEntity.deletedDate," +
+        "transactionEntity.category as categoryId," +
+        "categoryEntity.name as categoryName," +
+        "categoryEntity.description as categoryDescription," +
+        "categoryEntity.canBeDeleted as categoryCanBeDeleted" +
         " FROM transactionEntity " +
         "INNER JOIN categoryEntity ON transactionEntity.category = categoryEntity.id"
 )
@@ -20,12 +22,12 @@ data class TransactionDetailView(
     val id: Long,
     val amount: Float,
     val note: String?,
-    val category: Int,
     val date: Long,
     val createdDate: Long,
     val updatedDate: Long?,
     val deletedDate: Long?,
-    val name: String,
-    val description: String,
-    val canBeDeleted: Boolean
+    val categoryId: Long,
+    val categoryName: String,
+    val categoryDescription: String,
+    val categoryCanBeDeleted: Boolean
 )

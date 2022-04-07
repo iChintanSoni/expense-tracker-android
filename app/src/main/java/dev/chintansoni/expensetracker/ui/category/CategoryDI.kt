@@ -1,18 +1,18 @@
 package dev.chintansoni.expensetracker.ui.category
 
-import dev.chintansoni.expensetracker.ui.category.list.CategoriesViewModel
-import dev.chintansoni.expensetracker.ui.category.manage.ManageCategoryViewModel
+import dev.chintansoni.expensetracker.ui.category.detail.DetailViewModel
+import dev.chintansoni.expensetracker.ui.category.list.ListViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val categoryModule = module {
     viewModel {
-        CategoriesViewModel(
+        ListViewModel(
             categoryRepository = get()
         )
     }
-    viewModel { (categoryId: Int) ->
-        ManageCategoryViewModel(
+    viewModel { (categoryId: Long) ->
+        DetailViewModel(
             categoryId = categoryId,
             categoryRepository = get(),
             categoryUseCase = get()

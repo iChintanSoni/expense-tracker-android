@@ -1,5 +1,6 @@
 package dev.chintansoni.expensetracker.ui.auth.signup
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -8,10 +9,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -22,9 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.navigator.BackViewRoute
-import dev.chintansoni.expensetracker.ui.navigator.navigate
+import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.Typography
+import dev.chintansoni.expensetracker.ui.util.SuccessFailureView
+import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
 
 const val ROUTE_SIGN_UP = "SignUp"
@@ -32,57 +34,104 @@ const val ROUTE_SIGN_UP = "SignUp"
 @Composable
 fun SignUpView(navController: NavController = rememberNavController()) {
 
-    val signUpViewModel: SignUpViewModel by viewModel()
+    val viewModel: SignUpViewModel by viewModel()
+    val uiState: SignUpContract.State by viewModel.uiState.collectAsState()
+    val effect: SignUpContract.Effect by viewModel.effect.collectAsState(initial = SignUpContract.Effect.Nothing)
 
-    val firstName: String by signUpViewModel.firstNameSF.collectAsState()
+    LaunchedEffect(key1 = effect) {
+        when (effect) {
+            SignUpContract.Effect.NavigateBack, SignUpContract.Effect.NavigateToSignIn ->
+                navController.navigateBack()
+            else -> {}
+        }
+    }
+
     val onFirstNameChange: (String) -> Unit = {
-
+        viewModel.setEvent(SignUpContract.Event.OnFirstNameChange(it))
     }
-
-    val lastName: String by signUpViewModel.lastNameSF.collectAsState()
     val onLastNameChange: (String) -> Unit = {
-
+        viewModel.setEvent(SignUpContract.Event.OnLastNameChange(it))
     }
-    val email: String by signUpViewModel.emailSF.collectAsState()
     val onEmailChange: (String) -> Unit = {
-
+        viewModel.setEvent(SignUpContract.Event.OnEmailChange(it))
     }
-    val password: String by signUpViewModel.mobileSF.collectAsState()
     val onPasswordChange: (String) -> Unit = {
-
+        viewModel.setEvent(SignUpContract.Event.OnPasswordChange(it))
     }
-
     val onSignUpClick: () -> Unit = {
-        navController.navigate(BackViewRoute)
+        viewModel.setEvent(SignUpContract.Event.OnSignUpClick)
     }
     val onBackClick: () -> Unit = {
-        navController.navigate(BackViewRoute)
+        viewModel.setEvent(SignUpContract.Event.OnBackClick)
+    }
+    val onTryAgainClick: () -> Unit = {
+        viewModel.setEvent(SignUpContract.Event.OnTryAgainClick)
     }
 
     SignUpContent(
-        firstName = firstName,
+        uiState = uiState,
         onFirstNameChange = onFirstNameChange,
-        lastName = lastName,
         onLastNameChange = onLastNameChange,
-        email = email,
         onEmailChange = onEmailChange,
-        password = password,
         onPasswordChange = onPasswordChange,
         onSignUpClick = onSignUpClick,
-        onBackClick = onBackClick
+        onBackClick = onBackClick,
+        onTryAgainClick = onTryAgainClick
     )
 }
 
 @Preview(showBackground = true)
 @Composable
 fun SignUpContent(
-    firstName: String = "",
+    uiState: SignUpContract.State = SignUpContract.State.default(),
     onFirstNameChange: (String) -> Unit = {},
-    lastName: String = "",
     onLastNameChange: (String) -> Unit = {},
-    email: String = "",
     onEmailChange: (String) -> Unit = {},
-    password: String = "",
+    onPasswordChange: (String) -> Unit = {},
+    onSignUpClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onTryAgainClick: () -> Unit = {}
+) {
+    Crossfade(targetState = uiState.signUpApiState) {
+        when (it) {
+            SignUpContract.SignUpApiState.Idle, SignUpContract.SignUpApiState.InProgress -> {
+                FormView(
+                    uiState = uiState,
+                    onFirstNameChange = onFirstNameChange,
+                    onLastNameChange = onLastNameChange,
+                    onEmailChange = onEmailChange,
+                    onPasswordChange = onPasswordChange,
+                    onSignUpClick = onSignUpClick,
+                    onBackClick = onBackClick
+                )
+            }
+            is SignUpContract.SignUpApiState.Success -> {
+                SuccessFailureView(
+                    title = "Success",
+                    description = it.successMessage,
+                    actionLabel = "Go to login",
+                    onActionClick = onBackClick
+                )
+            }
+            is SignUpContract.SignUpApiState.Failure -> {
+                SuccessFailureView(
+                    title = "Failure",
+                    description = it.errorMessage,
+                    actionLabel = "Try again",
+                    onActionClick = onTryAgainClick
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun FormView(
+    uiState: SignUpContract.State = SignUpContract.State.default(),
+    onFirstNameChange: (String) -> Unit = {},
+    onLastNameChange: (String) -> Unit = {},
+    onEmailChange: (String) -> Unit = {},
     onPasswordChange: (String) -> Unit = {},
     onSignUpClick: () -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -100,57 +149,74 @@ fun SignUpContent(
             style = Typography.h5,
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
-            value = firstName,
+            value = uiState.firstName,
             singleLine = true,
             onValueChange = onFirstNameChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            label = { Text("First Name") }
+            label = "First Name",
+            errorText = uiState.firstNameError,
+            enabled = uiState.signUpApiState.isNotInProgress()
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
-            value = lastName,
+            value = uiState.lastName,
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = onLastNameChange,
-            label = { Text("Last Name") }
+            label = "Last Name",
+            errorText = uiState.lastNameError,
+            enabled = uiState.signUpApiState.isNotInProgress()
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
-            value = email,
+            value = uiState.email,
             singleLine = true,
             onValueChange = onEmailChange,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            label = { Text("Email") }
+            label = "Email",
+            errorText = uiState.emailError,
+            enabled = uiState.signUpApiState.isNotInProgress()
         )
 
-        OutlinedTextField(
+        TextFieldWithError(
             modifier = Modifier.padding(8.dp),
-            value = password,
+            value = uiState.password,
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             onValueChange = onPasswordChange,
-            label = { Text("Password") }
+            label = "Password",
+            errorText = uiState.passwordError,
+            enabled = uiState.signUpApiState.isNotInProgress()
         )
 
         Button(
-            onClick = onSignUpClick, modifier = Modifier
+            onClick = onSignUpClick,
+            modifier = Modifier
                 .padding(12.dp)
-                .width(280.dp)
+                .width(280.dp),
+            enabled = uiState.signUpApiState.isNotInProgress()
         ) {
-            Text("Sign Up", modifier = Modifier.padding(4.dp))
+            Text(
+                text = "Sign Up",
+                modifier = Modifier.padding(4.dp)
+            )
         }
 
         TextButton(
             onClick = onBackClick,
             modifier = Modifier
                 .padding(12.dp)
-                .width(280.dp)
+                .width(280.dp),
+            enabled = uiState.signUpApiState.isNotInProgress()
         ) {
-            Text("Back", modifier = Modifier.padding(4.dp))
+            Text(
+                text = "Back",
+                modifier = Modifier.padding(4.dp)
+            )
         }
     }
 }

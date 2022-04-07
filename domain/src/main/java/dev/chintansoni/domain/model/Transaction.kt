@@ -6,7 +6,7 @@ data class Transaction(
     val id: Long,
     val amount: Float,
     val note: String?,
-    val category: Int,
+    val category: Long,
     val date: Long,
     val createdDate: Long,
     val updatedDate: Long?,
@@ -23,24 +23,5 @@ data class Transaction(
             updatedDate = null,
             deletedDate = null
         )
-
-        fun newInstance(): Transaction = Transaction(
-            id = 0,
-            amount = 0f,
-            note = null,
-            category = 0,
-            date = currentDateTimeInMillis(),
-            createdDate = currentDateTimeInMillis(),
-            updatedDate = null,
-            deletedDate = null
-        )
-    }
-
-    fun printableAmount(): String {
-        return if (amount > 0.0) amount.toString() else ""
-    }
-
-    fun isValid(): Boolean {
-        return amount > 0.0 && category > 0 && date > 0
     }
 }

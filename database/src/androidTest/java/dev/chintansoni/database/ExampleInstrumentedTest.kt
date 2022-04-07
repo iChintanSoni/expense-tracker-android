@@ -4,7 +4,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import dev.chintansoni.database.entity.transaction.TransactionDao
 import dev.chintansoni.database.entity.transaction.TransactionEntity
-import dev.chintansoni.database.entity.transaction.TransactionType
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -45,9 +44,8 @@ class ExampleInstrumentedTest : KoinTest {
             id = 0,
             amount = 10.0f,
             note = "Snacks",
-            category = "Food",
+            category = 1,
             date = 1,
-            type = TransactionType.Debit,
             createdDate = 1,
             updatedDate = 1,
             deletedDate = 1
@@ -55,9 +53,9 @@ class ExampleInstrumentedTest : KoinTest {
         runBlocking {
             val transactionId = transactionDao.insertTransaction(transactionEntityExpected)
             val transactionEntityActual: TransactionEntity? =
-                transactionDao.getByIdFlow(transactionId.toInt()).first()
+                transactionDao.getByIdFlow(transactionId).first()
             assertEquals(
-                transactionEntityExpected.copy(id = transactionId.toInt()),
+                transactionEntityExpected.copy(id = transactionId),
                 transactionEntityActual
             )
         }
@@ -69,9 +67,8 @@ class ExampleInstrumentedTest : KoinTest {
             id = 10,
             amount = 10.0f,
             note = "Today's Dinner",
-            category = "Food",
+            category = 1,
             date = 1,
-            type = TransactionType.Debit,
             createdDate = 1,
             updatedDate = 1,
             deletedDate = 1
@@ -83,10 +80,10 @@ class ExampleInstrumentedTest : KoinTest {
             }
 
             val actualTransactionEntity: TransactionEntity? =
-                transactionDao.getByIdFlow(transactionId.toInt()).first()
+                transactionDao.getByIdFlow(transactionId).first()
             assertNotNull(actualTransactionEntity) {
                 val expectedUpdatedTransaction = it.copy(
-                    category = "Electronics",
+                    category = 2,
                     note = "Apple Watch"
                 )
                 val rowsAffected = transactionDao.updateTransaction(expectedUpdatedTransaction)
@@ -103,9 +100,8 @@ class ExampleInstrumentedTest : KoinTest {
             id = 10,
             amount = 10.0f,
             note = "Today's Dinner",
-            category = "Food",
+            category = 1,
             date = 1,
-            type = TransactionType.Debit,
             createdDate = 1,
             updatedDate = 1,
             deletedDate = 1
@@ -117,7 +113,7 @@ class ExampleInstrumentedTest : KoinTest {
             }
 
             val actualTransactionEntity: TransactionEntity? =
-                transactionDao.getByIdFlow(transactionId.toInt()).first()
+                transactionDao.getByIdFlow(transactionId).first()
             assertNotNull(actualTransactionEntity) {
                 val rowsAffected = transactionDao.deleteTransaction(it)
                 assert(rowsAffected > 0) {

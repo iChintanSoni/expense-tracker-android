@@ -1,22 +1,31 @@
 package dev.chintansoni.expensetracker.ui.home.profile
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dev.chintansoni.domain.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import dev.chintansoni.expensetracker.base.BaseViewModel
+import kotlin.coroutines.CoroutineContext
 
 class ProfileViewModel(private val userRepository: UserRepository) :
-    ViewModel() {
+    BaseViewModel<ProfileViewContract.Event, ProfileViewContract.State, ProfileViewContract.Effect>() {
 
-    fun logout(result: () -> Unit = {}) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.setUserLoggedIn(false)
-            withContext(Dispatchers.Main) {
-                result()
+    override fun createInitialState(): ProfileViewContract.State =
+        ProfileViewContract.State.default()
+
+    override fun handleEvent(event: ProfileViewContract.Event) {
+        when (event) {
+            ProfileViewContract.Event.OnLogoutClick -> {
+                performLogout()
             }
         }
     }
 
+    private fun performLogout() {
+        launchInIO {
+            userRepository.setUserLoggedIn(false)
+            setEffect { ProfileViewContract.Effect.NavigateToSignIn }
+        }
+    }
+
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
+
+    }
 }

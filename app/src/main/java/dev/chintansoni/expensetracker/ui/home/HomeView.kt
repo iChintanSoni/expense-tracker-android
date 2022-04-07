@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -25,8 +24,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.home.chart.ROUTE_CHART
+import dev.chintansoni.expensetracker.ui.home.analytics.AnalyticsView
+import dev.chintansoni.expensetracker.ui.home.analytics.ROUTE_CHART
+import dev.chintansoni.expensetracker.ui.home.list.ListView
 import dev.chintansoni.expensetracker.ui.home.list.ROUTE_LIST
+import dev.chintansoni.expensetracker.ui.home.profile.ProfileView
 import dev.chintansoni.expensetracker.ui.home.profile.ROUTE_PROFILE
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
@@ -53,7 +55,11 @@ fun HomeView(navController: NavController = rememberNavController()) {
     val onAddClick: () -> Unit = {
         navController.navigate(MainRoute.TransactionDetailViewRoute(0))
     }
-    HomeContent(mainNavController = navController, onSettingClick = onSettingClick, onAddClick)
+    HomeContent(
+        mainNavController = navController,
+        onSettingClick = onSettingClick,
+        onAddClick = onAddClick
+    )
 }
 
 @Preview(showBackground = true)
@@ -76,7 +82,10 @@ private fun HomeContent(
             )
         },
         floatingActionButton = {
-            Fab(AddIcon, onClick = onAddClick)
+            Fab(
+                icon = AddIcon,
+                onClick = onAddClick
+            )
         },
         bottomBar = {
             BottomNavigation(navController)
@@ -89,9 +98,7 @@ private fun HomeContent(
 @Preview(showBackground = true)
 @Composable
 fun BottomNavigation(
-    navController: NavController = NavHostController(
-        LocalContext.current
-    )
+    navController: NavController = rememberNavController()
 ) {
     val navItems = listOf(
         NavItem.ChartNavItem,
@@ -134,12 +141,18 @@ fun NavigationGraph(
     mainNavController: NavController = rememberNavController()
 ) {
     NavHost(
-        navController,
+        navController = navController,
         startDestination = NavItem.ChartNavItem.route,
-        Modifier.padding(innerPadding)
+        modifier = Modifier.padding(innerPadding)
     ) {
         homeContentRoute(mainNavController)
     }
+}
+
+fun NavGraphBuilder.homeContentRoute(mainNavController: NavController) {
+    composable(NavItem.ChartNavItem.route) { AnalyticsView() }
+    composable(NavItem.ListNavItem.route) { ListView(mainNavController) }
+    composable(NavItem.ProfileNavItem.route) { ProfileView(mainNavController) }
 }
 
 sealed class NavItem(val route: String, val label: String, val icon: @Composable () -> Unit) {

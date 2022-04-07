@@ -9,8 +9,13 @@ import dev.chintansoni.expensetracker.ui.auth.signin.ROUTE_SIGN_IN
 import dev.chintansoni.expensetracker.ui.auth.signin.SignInView
 import dev.chintansoni.expensetracker.ui.auth.signup.ROUTE_SIGN_UP
 import dev.chintansoni.expensetracker.ui.auth.signup.SignUpView
+import dev.chintansoni.expensetracker.ui.auth.splash.ROUTE_SPLASH
+import dev.chintansoni.expensetracker.ui.auth.splash.SplashView
 
 fun NavGraphBuilder.authRoute(navController: NavController) {
+    composable(ROUTE_SPLASH) {
+        SplashView(navController)
+    }
     composable(ROUTE_SIGN_IN) {
         SignInView(navController)
     }
