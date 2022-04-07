@@ -1,50 +1,58 @@
 package dev.chintansoni.expensetracker.ui.auth.forgotpassword
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import dev.chintansoni.expensetracker.base.BaseViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 import kotlin.random.Random
 
-class ForgotPasswordViewModel : ViewModel() {
+class ForgotPasswordViewModel :
+    BaseViewModel<ForgotPasswordContract.Event, ForgotPasswordContract.State, ForgotPasswordContract.Effect>() {
 
-    private val _emailMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val emailSF: StateFlow<String> = _emailMSF.asStateFlow()
+    override fun createInitialState(): ForgotPasswordContract.State =
+        ForgotPasswordContract.State.default()
 
-    private val _sendLinkStatusMSF: MutableStateFlow<SendLinkStatus> =
-        MutableStateFlow(SendLinkStatus.Default)
-    val sendLinkStatusSF: StateFlow<SendLinkStatus> = _sendLinkStatusMSF.asStateFlow()
-
-    fun setEmail(email: String) {
-        _emailMSF.update { email }
+    override fun handleEvent(event: ForgotPasswordContract.Event) {
+        when (event) {
+            is ForgotPasswordContract.Event.OnEmailChange -> {
+                setState {
+                    copy(
+                        email = event.email,
+                        emailError = ""
+                    )
+                }
+            }
+            is ForgotPasswordContract.Event.OnSendLinkClick -> {
+                sendPasswordResetLink()
+            }
+            is ForgotPasswordContract.Event.OnBackClick -> {
+                setEffect { ForgotPasswordContract.Effect.NavigateBack }
+            }
+            is ForgotPasswordContract.Event.OnTryAgainClick -> {
+                setState { copy(forgotPasswordApiState = ForgotPasswordContract.ForgotPasswordApiState.Idle) }
+            }
+        }
     }
 
-    fun sendLink() {
-        _sendLinkStatusMSF.update { SendLinkStatus.InProgress }
-        viewModelScope.launch {
-            delay(1000)
-            _sendLinkStatusMSF.update {
+    private fun sendPasswordResetLink() {
+        setState {
+            copy(
+                emailError = currentState.validateEmail()
+            )
+        }
+        launchInIO {
+            if (currentState.isFormStateValid()) {
+                setState { copy(forgotPasswordApiState = ForgotPasswordContract.ForgotPasswordApiState.InProgress) }
+                delay(1500)
                 if (Random.nextBoolean()) {
-                    SendLinkStatus.Success
+                    setState { copy(forgotPasswordApiState = ForgotPasswordContract.ForgotPasswordApiState.Success()) }
                 } else {
-                    SendLinkStatus.Failure
+                    setState { copy(forgotPasswordApiState = ForgotPasswordContract.ForgotPasswordApiState.Failure()) }
                 }
             }
         }
     }
 
-    fun resetSendLinkStatus() {
-        _sendLinkStatusMSF.update { SendLinkStatus.Default }
-    }
-}
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
 
-sealed class SendLinkStatus {
-    object Default : SendLinkStatus()
-    object InProgress : SendLinkStatus()
-    object Success : SendLinkStatus()
-    object Failure : SendLinkStatus()
+    }
 }

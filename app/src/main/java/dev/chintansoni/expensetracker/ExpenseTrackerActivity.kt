@@ -13,12 +13,11 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.ui.auth.authRoute
+import dev.chintansoni.expensetracker.ui.category.detail.categoryDetailRoute
 import dev.chintansoni.expensetracker.ui.category.list.categoriesRoute
-import dev.chintansoni.expensetracker.ui.category.manage.manageCategoryRoute
 import dev.chintansoni.expensetracker.ui.home.homeRoute
+import dev.chintansoni.expensetracker.ui.home.setting.settingRoute
 import dev.chintansoni.expensetracker.ui.navigator.MainRoute
-import dev.chintansoni.expensetracker.ui.setting.settingRoute
-import dev.chintansoni.expensetracker.ui.splash.splashRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
 import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
@@ -48,13 +47,12 @@ fun App() {
         navController = navController,
         startDestination = MainRoute.SplashViewRoute.route
     ) {
-        splashRoute(navController)
         authRoute(navController)
         homeRoute(navController)
         transactionDetailRoute(navController)
         settingRoute(navController)
         categoriesRoute(navController)
-        manageCategoryRoute(navController)
+        categoryDetailRoute(navController)
     }
 }
 

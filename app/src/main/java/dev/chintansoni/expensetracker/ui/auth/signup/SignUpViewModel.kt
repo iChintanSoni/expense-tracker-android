@@ -1,38 +1,81 @@
 package dev.chintansoni.expensetracker.ui.auth.signup
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import dev.chintansoni.expensetracker.base.BaseViewModel
+import dev.chintansoni.expensetracker.ui.util.validateEmail
+import dev.chintansoni.expensetracker.ui.util.validatePassword
+import kotlinx.coroutines.delay
+import kotlin.coroutines.CoroutineContext
+import kotlin.random.Random
 
-class SignUpViewModel : ViewModel() {
+class SignUpViewModel :
+    BaseViewModel<SignUpContract.Event, SignUpContract.State, SignUpContract.Effect>() {
 
-    private val _firstNameMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val firstNameSF: StateFlow<String> = _firstNameMSF.asStateFlow()
+    override fun createInitialState(): SignUpContract.State = SignUpContract.State.default()
 
-    private val _lastNameMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val lastNameSF: StateFlow<String> = _lastNameMSF.asStateFlow()
-
-    private val _emailMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val emailSF: StateFlow<String> = _emailMSF.asStateFlow()
-
-    private val _mobileMSF: MutableStateFlow<String> = MutableStateFlow("")
-    val mobileSF: StateFlow<String> = _mobileMSF.asStateFlow()
-
-    fun setEmail(email: String) {
-        _emailMSF.update { email }
+    override fun handleEvent(event: SignUpContract.Event) = when (event) {
+        is SignUpContract.Event.OnFirstNameChange -> setState {
+            copy(
+                firstName = event.firstName,
+                firstNameError = ""
+            )
+        }
+        is SignUpContract.Event.OnLastNameChange -> setState {
+            copy(
+                lastName = event.lastName,
+                lastNameError = ""
+            )
+        }
+        is SignUpContract.Event.OnEmailChange -> setState {
+            copy(
+                email = event.email,
+                emailError = ""
+            )
+        }
+        is SignUpContract.Event.OnPasswordChange -> setState {
+            copy(
+                password = event.password,
+                passwordError = ""
+            )
+        }
+        SignUpContract.Event.OnBackClick -> setEffect { SignUpContract.Effect.NavigateBack }
+        SignUpContract.Event.OnBackToLoginClick -> setEffect { SignUpContract.Effect.NavigateBack }
+        SignUpContract.Event.OnTryAgainClick -> setState { copy(signUpApiState = SignUpContract.SignUpApiState.Idle) }
+        SignUpContract.Event.OnSignUpClick -> performSignUp()
     }
 
-    fun setFirstName(firstName: String) {
-        _firstNameMSF.update { firstName }
+    private fun performSignUp() {
+        setState {
+            copy(
+                firstNameError = validateFirstName(),
+                lastNameError = validateLastName(),
+                emailError = email.validateEmail(),
+                passwordError = password.validatePassword()
+            )
+        }
+
+        if (currentState.isStateFormValid()) {
+            launchInIO {
+                setState { copy(signUpApiState = SignUpContract.SignUpApiState.InProgress) }
+                delay(1500)
+                val result = Random.nextBoolean()
+                if (result) {
+                    setState {
+                        copy(
+                            signUpApiState = SignUpContract.SignUpApiState.Success()
+                        )
+                    }
+                } else {
+                    setState {
+                        copy(
+                            signUpApiState = SignUpContract.SignUpApiState.Failure()
+                        )
+                    }
+                }
+            }
+        }
     }
 
-    fun setLastName(lastName: String) {
-        _lastNameMSF.update { lastName }
-    }
+    override fun handleException(coroutineContext: CoroutineContext, throwable: Throwable) {
 
-    fun setMobile(mobile: String) {
-        _mobileMSF.update { mobile }
     }
 }

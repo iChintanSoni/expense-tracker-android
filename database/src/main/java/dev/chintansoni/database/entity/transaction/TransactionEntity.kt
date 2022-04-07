@@ -9,7 +9,7 @@ data class TransactionEntity(
     val id: Long,
     val amount: Float,
     val note: String?,
-    val category: Int,
+    val category: Long,
     val date: Long,
     val createdDate: Long,
     val updatedDate: Long?,

@@ -3,87 +3,72 @@ package dev.chintansoni.expensetracker.ui.theme
 import androidx.annotation.DrawableRes
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Category
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.EventNote
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Mail
-import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PieChartOutline
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 
-private val ChartImage: ImageVector = Icons.Default.PieChartOutline
+private val chartImage: ImageVector = Icons.Default.PieChartOutline
 val ChartIcon: @Composable () -> Unit =
-    { Icon(imageVector = ChartImage, contentDescription = "Chart Image") }
+    { Icon(imageVector = chartImage, contentDescription = "Chart Image") }
 
-private val PersonImage: ImageVector = Icons.Default.Person
+private val personImage: ImageVector = Icons.Default.Person
 val PersonIcon: @Composable () -> Unit =
-    { Icon(imageVector = PersonImage, contentDescription = "Person Image") }
+    { Icon(imageVector = personImage, contentDescription = "Person Image") }
 
-private val ListImage: ImageVector = Icons.Default.List
+private val listImage: ImageVector = Icons.Default.List
 val ListIcon: @Composable () -> Unit =
-    { Icon(imageVector = ListImage, contentDescription = "List Image") }
+    { Icon(imageVector = listImage, contentDescription = "List Image") }
 
-private val AddImage: ImageVector = Icons.Default.Add
+private val addImage: ImageVector = Icons.Default.Add
 val AddIcon: @Composable () -> Unit =
-    { Icon(imageVector = AddImage, contentDescription = "Add Image") }
+    { Icon(imageVector = addImage, contentDescription = "Add Image") }
 
-private val BackImage: ImageVector = Icons.Default.ArrowBack
+private val backImage: ImageVector = Icons.Default.ArrowBack
 val BackIcon: @Composable () -> Unit =
-    { Icon(imageVector = BackImage, contentDescription = "Back Image") }
+    { Icon(imageVector = backImage, contentDescription = "Back Image") }
 
-private val NoteImage: ImageVector = Icons.Default.EventNote
+private val noteImage: ImageVector = Icons.Default.EventNote
 val NoteIcon: @Composable () -> Unit =
-    { Icon(imageVector = NoteImage, contentDescription = "Note Image") }
+    { Icon(imageVector = noteImage, contentDescription = "Note Image") }
 
-private val DropDownImage: ImageVector = Icons.Default.ArrowDropDown
+private val dropDownImage: ImageVector = Icons.Default.ArrowDropDown
 val DropDownIcon: @Composable () -> Unit =
-    { Icon(imageVector = DropDownImage, contentDescription = "DropDown Image") }
+    { Icon(imageVector = dropDownImage, contentDescription = "DropDown Image") }
 
-private val EventImage: ImageVector = Icons.Default.Event
+private val eventImage: ImageVector = Icons.Default.Event
 val EventIcon: @Composable () -> Unit =
-    { Icon(imageVector = EventImage, contentDescription = "Event Image") }
+    { Icon(imageVector = eventImage, contentDescription = "Event Image") }
 
-val CategoryImage: ImageVector = Icons.Default.Category
+private val categoryImage: ImageVector = Icons.Default.Category
 val CategoryIcon: @Composable () -> Unit =
-    { Icon(imageVector = CategoryImage, contentDescription = "Category Image") }
+    { Icon(imageVector = categoryImage, contentDescription = "Category Image") }
 
-val DoneImage: ImageVector = Icons.Default.Done
+private val doneImage: ImageVector = Icons.Default.Done
 val DoneIcon: @Composable () -> Unit =
-    { Icon(imageVector = DoneImage, contentDescription = "Done Image") }
+    { Icon(imageVector = doneImage, contentDescription = "Done Image") }
 
-val EmailImage: ImageVector = Icons.Default.Mail
-val emailIcon: @Composable () -> Unit =
-    { Icon(imageVector = EmailImage, contentDescription = "Email Image") }
+private val emailImage: ImageVector = Icons.Default.Mail
+val EmailIcon: @Composable () -> Unit =
+    { Icon(imageVector = emailImage, contentDescription = "Email Image") }
 
-val PasswordImage: ImageVector = Icons.Default.Password
-val passwordIcon: @Composable () -> Unit =
-    { Icon(imageVector = PasswordImage, contentDescription = "Password Image") }
+private val passwordImage: ImageVector = Icons.Default.Password
+val PasswordIcon: @Composable () -> Unit =
+    { Icon(imageVector = passwordImage, contentDescription = "Password Image") }
 
-val navigateNextImage: ImageVector = Icons.Default.NavigateNext
+private val navigateNextImage: ImageVector = Icons.Default.NavigateNext
 val NavigateNextIcon: @Composable () -> Unit =
     { Icon(imageVector = navigateNextImage, contentDescription = "Arrow Right Icon") }
 
-val settingImage: ImageVector = Icons.Default.Settings
+private val settingImage: ImageVector = Icons.Default.Settings
 val SettingIcon: @Composable () -> Unit =
     { Icon(imageVector = settingImage, contentDescription = "Setting Icon") }
 
-val deleteImage: ImageVector = Icons.Default.Delete
+private val deleteImage: ImageVector = Icons.Default.Delete
 val DeleteIcon: @Composable () -> Unit =
     { Icon(imageVector = deleteImage, contentDescription = "Delete Icon") }
 
-val editImage: ImageVector = Icons.Default.Edit
+private val editImage: ImageVector = Icons.Default.Edit
 val EditIcon: @Composable () -> Unit =
     { Icon(imageVector = editImage, contentDescription = "Edit Icon") }
 

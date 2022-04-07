@@ -1,12 +1,6 @@
 package dev.chintansoni.database.entity.transaction
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.Companion.REPLACE
-import androidx.room.Query
-import androidx.room.Transaction
-import androidx.room.Update
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,10 +12,13 @@ interface TransactionDao {
     fun getByIdFlow(id: Long): Flow<TransactionEntity?>
 
     @Query("SELECT * FROM TransactionEntity WHERE category = :categoryId")
-    suspend fun getAllByCategory(categoryId: Int): List<TransactionEntity>
+    suspend fun getAllByCategory(categoryId: Long): List<TransactionEntity>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertTransaction(transactionEntity: TransactionEntity): Long
+
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun updateTransaction(transactionEntity: TransactionEntity): Int
 
     @Transaction
     suspend fun updateTransactions(transactions: List<TransactionEntity>): List<Int> {
@@ -30,8 +27,14 @@ interface TransactionDao {
         }
     }
 
-    @Update(onConflict = REPLACE)
-    suspend fun updateTransaction(transactionEntity: TransactionEntity): Int
+    @Transaction
+    suspend fun upsertTransaction(transactionEntity: TransactionEntity): Long {
+        val id: Long = insertTransaction(transactionEntity)
+        if (id == -1L) {
+            updateTransaction(transactionEntity)
+        }
+        return id
+    }
 
     @Delete
     suspend fun deleteTransaction(transactionEntity: TransactionEntity): Int

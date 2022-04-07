@@ -2,7 +2,6 @@ package dev.chintansoni.domain.usecase
 
 import dev.chintansoni.domain.model.Category
 import dev.chintansoni.domain.model.Transaction
-import dev.chintansoni.domain.model.UncategorizedCategory
 import dev.chintansoni.domain.repository.CategoryRepository
 import dev.chintansoni.domain.repository.TransactionRepository
 
@@ -11,9 +10,9 @@ class CategoryUseCase(
     private val categoryRepository: CategoryRepository
 ) {
 
-    @Throws(CategoryNotFoundException::class)
+    @Throws(CategoryWithNameNotFoundException::class)
     suspend fun deleteCategory(category: Category) {
-        val uncategorized: Category? = categoryRepository.getCategoryByName(UncategorizedCategory)
+        val uncategorized: Category? = categoryRepository.getCategoryByName(Category.uncategorized)
         uncategorized?.let { it ->
             val transactions: List<Transaction> =
                 transactionRepository.getAllTransactionsByCategory(categoryId = category.id)
@@ -22,9 +21,9 @@ class CategoryUseCase(
             }
             transactionRepository.updateTransactions(updatedTransactions)
             categoryRepository.deleteCategory(category)
-        } ?: throw CategoryNotFoundException(category.name)
+        } ?: throw CategoryWithNameNotFoundException(category.name)
     }
 }
 
-data class CategoryNotFoundException(val categoryName: String) :
-    Exception("No category found with name: $categoryName")
+data class CategoryWithNameNotFoundException(val categoryName: String) :
+    Throwable("No category found with name: $categoryName")

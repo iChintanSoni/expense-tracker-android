@@ -1,12 +1,11 @@
 package dev.chintansoni.domain.repository
 
 import dev.chintansoni.domain.model.Transaction
-import dev.chintansoni.domain.model.TransactionDetail
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionRepository {
 
-    fun getAllTransactionsFlow(): Flow<List<TransactionDetail>>
+    fun getAllTransactionsFlow(): Flow<List<Transaction>>
 
     fun getTransactionByIdFlow(id: Long): Flow<Transaction?>
 
@@ -14,11 +13,13 @@ interface TransactionRepository {
 
     suspend fun updateTransaction(transaction: Transaction): Int
 
+    suspend fun upsertTransaction(transaction: Transaction): Long
+
     suspend fun updateTransactions(transactions: List<Transaction>): List<Int>
 
     suspend fun deleteTransaction(transaction: Transaction): Int
 
-    suspend fun getAllTransactionsByCategory(categoryId: Int): List<Transaction>
+    suspend fun getAllTransactionsByCategory(categoryId: Long): List<Transaction>
 
     suspend fun clear()
 }

@@ -15,8 +15,13 @@ private const val DATABASE_VERSION = 1
 private const val DATABASE_NAME = "ExpenseTrackerDatabase"
 
 @Database(
-    entities = [TransactionEntity::class, CategoryEntity::class],
-    views = [TransactionDetailView::class],
+    entities = [
+        TransactionEntity::class,
+        CategoryEntity::class
+    ],
+    views = [
+        TransactionDetailView::class
+    ],
     version = DATABASE_VERSION
 )
 abstract class ExpenseTrackerDatabase : RoomDatabase() {
