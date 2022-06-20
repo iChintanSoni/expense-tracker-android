@@ -12,7 +12,7 @@ plugins {
 }
 
 android {
-    compileSdkPreview = compileSDKVersion
+    compileSdk = compileSDKVersion.toInt()
 
     defaultConfig {
         applicationId = "dev.chintansoni.expensetracker"
@@ -55,19 +55,19 @@ android {
 }
 
 dependencies {
-    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-ktx:1.9.0-alpha05")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-alpha05")
-    implementation("androidx.activity:activity-compose:1.5.0-alpha03")
-    implementation("androidx.navigation:navigation-compose:2.5.0-alpha02")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-rc02")
+    implementation("androidx.activity:activity-compose:1.6.0-alpha05")
+    implementation("androidx.navigation:navigation-compose:2.5.0-rc02")
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation(project(":repository"))
     implementation(project(":domain"))
     implementation(project(":common"))
-    implementation("com.google.android.material:material:1.5.0")
+    implementation("com.google.android.material:material:1.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.3")
@@ -86,5 +86,5 @@ dependencies {
     implementation("io.insert-koin:koin-androidx-navigation:$koinVersion")
     testImplementation("io.insert-koin:koin-test:$koinVersion")
 
-    implementation("androidx.core:core-splashscreen:1.0.0-beta02")
+    implementation("androidx.core:core-splashscreen:1.0.0-rc01")
 }

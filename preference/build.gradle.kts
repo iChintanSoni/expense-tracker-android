@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    compileSdkPreview = compileSDKVersion
+    compileSdk = compileSDKVersion.toInt()
 
     defaultConfig {
         minSdk = minSDKVersion.toInt()
