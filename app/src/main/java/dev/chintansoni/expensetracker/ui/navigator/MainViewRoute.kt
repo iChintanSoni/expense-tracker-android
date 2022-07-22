@@ -11,37 +11,37 @@ import dev.chintansoni.expensetracker.ui.home.ROUTE_HOME
 import dev.chintansoni.expensetracker.ui.home.setting.ROUTE_SETTING
 import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
-sealed class MainRoute(
+sealed class MainViewRoute(
     override val route: String,
     override val navOptions: NavOptions = NavOptions.Builder().build(),
     override val args: Map<String, Any> = emptyMap()
 ) : ViewRoute(route, navOptions, args) {
 
-    object SplashViewRoute : MainRoute(ROUTE_SPLASH)
+    object SplashViewRoute : MainViewRoute(ROUTE_SPLASH)
 
     object SplashToSignInViewRoute :
-        MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_SPLASH, true).build())
+        MainViewRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_SPLASH, true).build())
 
-    object SignUpViewRoute : MainRoute(ROUTE_SIGN_UP)
+    object SignUpViewRoute : MainViewRoute(ROUTE_SIGN_UP)
 
-    object ForgotPasswordViewRoute : MainRoute(ROUTE_FORGOT_PASSWORD)
+    object ForgotPasswordViewRoute : MainViewRoute(ROUTE_FORGOT_PASSWORD)
 
     object SplashToHomeViewRoute :
-        MainRoute(ROUTE_HOME, NavOptions.Builder().setPopUpTo(ROUTE_SPLASH, true).build())
+        MainViewRoute(ROUTE_HOME, NavOptions.Builder().setPopUpTo(ROUTE_SPLASH, true).build())
 
     object SignInToHomeViewRoute :
-        MainRoute(ROUTE_HOME, NavOptions.Builder().setPopUpTo(ROUTE_SIGN_IN, true).build())
+        MainViewRoute(ROUTE_HOME, NavOptions.Builder().setPopUpTo(ROUTE_SIGN_IN, true).build())
 
     object HomeToSignInViewRoute :
-        MainRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_HOME, true).build())
+        MainViewRoute(ROUTE_SIGN_IN, NavOptions.Builder().setPopUpTo(ROUTE_HOME, true).build())
 
     data class TransactionDetailViewRoute(val transactionId: Long) :
-        MainRoute(transactionDetailRoute(transactionId))
+        MainViewRoute(transactionDetailRoute(transactionId))
 
-    object SettingViewRoute : MainRoute(ROUTE_SETTING)
+    object SettingViewRoute : MainViewRoute(ROUTE_SETTING)
 
-    object CategoriesViewRoute : MainRoute(ROUTE_CATEGORIES)
+    object CategoriesViewRoute : MainViewRoute(ROUTE_CATEGORIES)
 
     data class CategoryDetailViewRoute(val categoryId: Long = 0) :
-        MainRoute(buildCategoryDetailRoute(categoryId))
+        MainViewRoute(buildCategoryDetailRoute(categoryId))
 }

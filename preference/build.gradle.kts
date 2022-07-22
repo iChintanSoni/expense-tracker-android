@@ -6,6 +6,7 @@ val targetSDKVersion: String by project
 
 plugins {
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
 }
 
@@ -14,7 +15,6 @@ android {
 
     defaultConfig {
         minSdk = minSDKVersion.toInt()
-        targetSdk = targetSDKVersion.toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")

@@ -6,6 +6,7 @@ val coroutinesVersion: String by project
 
 plugins {
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
 }
 

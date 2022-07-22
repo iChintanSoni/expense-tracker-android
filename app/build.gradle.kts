@@ -4,6 +4,7 @@ val kotlinxDateTimeVersion: String by project
 val compileSDKVersion: String by project
 val minSDKVersion: String by project
 val targetSDKVersion: String by project
+val detektVersion: String by project
 
 plugins {
     id("com.android.application")
@@ -26,6 +27,7 @@ android {
             useSupportLibrary = true
         }
     }
+    namespace = "dev.chintansoni.expensetracker"
 
     buildTypes {
         release {
@@ -45,7 +47,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = composeVersion
+        kotlinCompilerExtensionVersion = "1.2.0"
     }
     packagingOptions {
         resources {
@@ -59,13 +61,12 @@ dependencies {
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.material:material:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0-alpha01")
     implementation("androidx.activity:activity-compose:1.6.0-alpha05")
-    implementation("androidx.navigation:navigation-compose:2.5.0-rc02")
+    implementation("androidx.navigation:navigation-compose:2.5.0")
     implementation("androidx.compose.material:material-icons-core:$composeVersion")
     implementation("androidx.compose.material:material-icons-extended:$composeVersion")
     implementation(project(":repository"))
-    implementation(project(":domain"))
     implementation(project(":common"))
     implementation("com.google.android.material:material:1.6.1")
 
@@ -75,7 +76,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-tooling:$composeVersion")
     debugImplementation("androidx.compose.ui:ui-test-manifest:$composeVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDateTimeVersion")
 
     // Koin for Kotlin apps
     implementation("io.insert-koin:koin-core:$koinVersion")
@@ -87,4 +87,6 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:$koinVersion")
 
     implementation("androidx.core:core-splashscreen:1.0.0-rc01")
+
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
 }

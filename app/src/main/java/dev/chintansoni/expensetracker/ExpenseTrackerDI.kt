@@ -1,7 +1,6 @@
 package dev.chintansoni.expensetracker
 
 import android.app.Application
-import dev.chintansoni.domain.domainModule
 import dev.chintansoni.expensetracker.ui.uiModules
 import dev.chintansoni.repository.repositoryModules
 import org.koin.android.ext.koin.androidContext
@@ -13,9 +12,7 @@ import org.koin.core.module.Module
 fun Application.startKoinDI() {
 
     // Register new DI modules here
-    val moduleList: List<Module> = mutableListOf(
-        domainModule
-    ).apply {
+    val moduleList: List<Module> = mutableListOf<Module>().apply {
         addAll(uiModules)
         addAll(repositoryModules)
     }

@@ -5,6 +5,7 @@ package dev.chintansoni.expensetracker.ui.category.list
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +30,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.domain.model.Category
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.AddIcon
@@ -56,7 +57,7 @@ fun CategoriesView(navController: NavController = rememberNavController()) {
     LaunchedEffect(key1 = effect, block = {
         when (effect) {
             is ListViewContract.Effect.NavigateToDetail -> {
-                navController.navigate(MainRoute.CategoryDetailViewRoute((effect as ListViewContract.Effect.NavigateToDetail).id))
+                navController.navigate(MainViewRoute.CategoryDetailViewRoute((effect as ListViewContract.Effect.NavigateToDetail).id))
             }
             is ListViewContract.Effect.NavigateBack -> {
                 navController.navigateBack()
@@ -74,7 +75,7 @@ fun CategoriesView(navController: NavController = rememberNavController()) {
         viewModel.setEvent(ListViewContract.Event.NavigateToDetail(it.id))
     }
     val onAddClick: () -> Unit = {
-        navController.navigate(MainRoute.CategoryDetailViewRoute(0))
+        navController.navigate(MainViewRoute.CategoryDetailViewRoute(0))
     }
 
     CategoriesContent(
@@ -104,15 +105,17 @@ fun CategoriesContent(
             )
         },
     ) {
-        LazyColumn {
-            itemsIndexed(categories) { index, category ->
-                CategoryItem(
-                    modifier = Modifier.animateItemPlacement(),
-                    category = category,
-                    onCategoryClick = onCategoryClick
-                )
-                if (index < categories.lastIndex)
-                    Divider(modifier = Modifier.padding(horizontal = 16.dp))
+        Box(modifier = Modifier.padding(it)) {
+            LazyColumn {
+                itemsIndexed(categories) { index, category ->
+                    CategoryItem(
+                        modifier = Modifier.animateItemPlacement(),
+                        category = category,
+                        onCategoryClick = onCategoryClick
+                    )
+                    if (index < categories.lastIndex)
+                        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                }
             }
         }
     }

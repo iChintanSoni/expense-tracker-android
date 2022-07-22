@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class TransactionDetailRepositoryImpl(
+internal class TransactionDetailRepositoryImpl(
     private val transactionDetailDao: TransactionDetailDao
 ) : TransactionDetailRepository {
 

@@ -1,8 +1,20 @@
 package dev.chintansoni.expensetracker.ui.category.detail
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,14 +22,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.*
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.BackIcon
 import dev.chintansoni.expensetracker.ui.theme.DeleteIcon
 import dev.chintansoni.expensetracker.ui.theme.DoneIcon
 import dev.chintansoni.expensetracker.ui.theme.EditIcon
+import dev.chintansoni.expensetracker.ui.util.Action
+import dev.chintansoni.expensetracker.ui.util.Alert
 import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
@@ -176,65 +194,52 @@ fun CategoryDetailContent(
             }
         }
     ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxSize()
-        ) {
-            TextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.category.name,
-                label = "Name",
-                onValueChange = onNameChange,
-                errorText = state.nameError,
-                enabled = state.isEditMode
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            TextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.category.description,
-                label = "Description",
-                onValueChange = onDescriptionChange,
-                errorText = state.descriptionError,
-                enabled = state.isEditMode
-            )
-        }
-    }
-
-    if (state.isDeleteMode) {
-        AlertDialog(
-            onDismissRequest = toggleDeleteMode,
-            title = {
-                Text(text = "Confirm")
-            },
-            text = {
-                Text(
-                    text = """Are you sure you want to delete this category?
-Note: Expenses with ${state.category.name} category will be changed to Uncategorized."""
+        Box(modifier = Modifier.padding(it)) {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
+            ) {
+                TextFieldWithError(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.category.name,
+                    label = "Name",
+                    onValueChange = onNameChange,
+                    errorText = state.nameError,
+                    enabled = state.isEditMode
                 )
-            },
-            buttons = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(
-                        onClick = toggleDeleteMode
-                    ) {
-                        Text(text = "Cancel")
-                    }
-                    TextButton(
-                        onClick = {
-                            onDeleteConfirm()
-                            toggleDeleteMode()
-                        }
-                    ) {
-                        Text(text = "Delete")
-                    }
-                }
+                Spacer(modifier = Modifier.height(16.dp))
+                TextFieldWithError(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.category.description,
+                    label = "Description",
+                    onValueChange = onDescriptionChange,
+                    errorText = state.descriptionError,
+                    enabled = state.isEditMode
+                )
             }
-        )
+
+            if (state.isDeleteMode) {
+                Alert(
+                    title = "Confirm",
+                    message = """Are you sure you want to delete this category?
+Note: Expenses with ${state.category.name} category will be changed to Uncategorized.""",
+                    actions = listOf(
+                        Action(
+                            label = "Cancel",
+                            onClick = toggleDeleteMode
+                        ),
+                        Action(
+                            label = "Delete",
+                            onClick = {
+                                onDeleteConfirm()
+                                toggleDeleteMode()
+                            }
+                        )
+                    ),
+                    onDismissRequest = { toggleDeleteMode() }
+                )
+            }
+        }
     }
 }

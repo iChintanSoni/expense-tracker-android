@@ -2,7 +2,7 @@ package dev.chintansoni.expensetracker.ui.transaction.detail
 
 import android.app.DatePickerDialog
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -57,6 +55,8 @@ import dev.chintansoni.expensetracker.ui.theme.DropDownIcon
 import dev.chintansoni.expensetracker.ui.theme.EditIcon
 import dev.chintansoni.expensetracker.ui.theme.EventIcon
 import dev.chintansoni.expensetracker.ui.theme.NoteIcon
+import dev.chintansoni.expensetracker.ui.util.Action
+import dev.chintansoni.expensetracker.ui.util.Alert
 import dev.chintansoni.expensetracker.ui.util.Fab
 import dev.chintansoni.expensetracker.ui.util.TextFieldWithError
 import org.koin.androidx.compose.viewModel
@@ -211,88 +211,72 @@ fun AddEditExpenseContent(
             }
         }
     ) {
-        Column(Modifier.padding(16.dp)) {
-            TextFieldWithError(
-                modifier = Modifier.fillMaxWidth(),
-                label = "Amount",
-                leadingIcon = { DrawableIcon(resId = R.drawable.currency_inr) },
-                value = state.amountAsString,
-                enabled = state.isEditMode,
-                errorText = state.amountError,
-                onValueChange = onAmountChange,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-
-                CategoryView(
+        Box(modifier = Modifier.padding(it)) {
+            Column(Modifier.padding(16.dp)) {
+                TextFieldWithError(
+                    modifier = Modifier.fillMaxWidth(),
+                    label = "Amount",
+                    leadingIcon = { DrawableIcon(resId = R.drawable.currency_inr) },
+                    value = state.amountAsString,
                     enabled = state.isEditMode,
-                    selectedCategory = state.transactionDetail.categoryId,
-                    onCategorySelected = onCategorySelected,
-                    categories = state.categories
+                    errorText = state.amountError,
+                    onValueChange = onAmountChange,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                DatePicker(
-                    enabled = state.isEditMode,
-                    selectedDateTime = state.transactionDetail.date,
-                    onDateSelected = onDateChange
-                )
-            }
+                Row(modifier = Modifier.fillMaxWidth()) {
 
-            Spacer(modifier = Modifier.height(16.dp))
+                    CategoryView(
+                        enabled = state.isEditMode,
+                        selectedCategory = state.transactionDetail.categoryId,
+                        onCategorySelected = onCategorySelected,
+                        categories = state.categories
+                    )
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = state.transactionDetail.note ?: "",
-                enabled = state.isEditMode,
-                leadingIcon = NoteIcon,
-                maxLines = 5,
-                onValueChange = onNoteChange,
-                label = { Text("Notes") },
-            )
-        }
-    }
+                    Spacer(modifier = Modifier.width(16.dp))
 
-    if (shouldShowConfirmDialog) {
-        AlertDialog(
-            onDismissRequest = {
-                shouldShowConfirmDialog = false
-            },
-            title = {
-                Text(text = "Confirm")
-            },
-            text = {
-                Text(
-                    "Are you sure you want to delete this transaction?\nNote: This action cannot be reverted."
-                )
-            },
-            buttons = {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(
-                        onClick = { shouldShowConfirmDialog = false }
-                    ) {
-                        Text("Cancel")
-                    }
-                    TextButton(
-                        onClick = {
-                            shouldShowConfirmDialog = false
-                            onConfirmDelete()
-                        }
-                    ) {
-                        Text("Delete")
-                    }
+                    DatePicker(
+                        enabled = state.isEditMode,
+                        selectedDateTime = state.transactionDetail.date,
+                        onDateSelected = onDateChange
+                    )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    modifier = Modifier.fillMaxWidth(),
+                    value = state.transactionDetail.note ?: "",
+                    enabled = state.isEditMode,
+                    leadingIcon = NoteIcon,
+                    maxLines = 5,
+                    onValueChange = onNoteChange,
+                    label = { Text("Notes") },
+                )
             }
-        )
+            if (shouldShowConfirmDialog) {
+                Alert(
+                    title = "Confirm",
+                    message = "Are you sure you want to delete this transaction?\nNote: This action cannot be reverted.",
+                    actions = listOf(
+                        Action(
+                            label = "Cancel",
+                            onClick = { shouldShowConfirmDialog = false }
+                        ),
+                        Action(
+                            label = "Delete",
+                            onClick = {
+                                shouldShowConfirmDialog = false
+                                onConfirmDelete()
+                            }
+                        )
+                    ),
+                    onDismissRequest = { shouldShowConfirmDialog = false }
+                )
+            }
+        }
     }
 }
 

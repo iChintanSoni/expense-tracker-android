@@ -7,6 +7,7 @@ val targetSDKVersion: String by project
 plugins {
     id("com.google.devtools.ksp")
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
     kotlin("kapt")
 }

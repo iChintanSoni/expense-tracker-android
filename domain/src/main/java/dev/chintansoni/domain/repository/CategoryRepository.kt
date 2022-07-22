@@ -23,5 +23,7 @@ interface CategoryRepository {
 
     suspend fun upsertCategory(category: Category): Long
 
+    suspend fun upsertAndGetCategory(category: Category): Category
+
     suspend fun clear()
 }

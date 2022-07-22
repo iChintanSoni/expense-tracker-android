@@ -2,7 +2,13 @@ package dev.chintansoni.expensetracker.ui.home.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -18,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import dev.chintansoni.expensetracker.R
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
 import org.koin.androidx.compose.viewModel
@@ -36,7 +42,7 @@ fun ProfileView(navController: NavController = rememberNavController()) {
     LaunchedEffect(key1 = effect, block = {
         when (effect) {
             ProfileViewContract.Effect.NavigateToSignIn -> {
-                navController.navigate(MainRoute.HomeToSignInViewRoute)
+                navController.navigate(MainViewRoute.HomeToSignInViewRoute)
             }
             else -> {}
         }

@@ -2,6 +2,7 @@ package dev.chintansoni.expensetracker.ui.home.setting
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.navigator.navigateBack
 import dev.chintansoni.expensetracker.ui.theme.CategoryIcon
@@ -48,7 +49,7 @@ fun SettingView(navController: NavController = rememberNavController()) {
             is SettingViewContract.Effect.NavigateToSettingOption -> {
                 when ((effect as SettingViewContract.Effect.NavigateToSettingOption).settingOption) {
                     SettingOption.Categories -> {
-                        navController.navigate(MainRoute.CategoriesViewRoute)
+                        navController.navigate(MainViewRoute.CategoriesViewRoute)
                     }
                 }
             }
@@ -85,9 +86,11 @@ private fun SettingContent(
             MainToolbar(title = "Settings", onBackClick = onBackClick)
         },
     ) {
-        Column {
-            state.settingOptions.forEach { settingOption ->
-                SettingItem(settingOption, onSettingOptionClick)
+        Box(modifier = Modifier.padding(it)) {
+            Column {
+                state.settingOptions.forEach { settingOption ->
+                    SettingItem(settingOption, onSettingOptionClick)
+                }
             }
         }
     }

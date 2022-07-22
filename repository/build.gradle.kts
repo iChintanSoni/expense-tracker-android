@@ -6,6 +6,7 @@ val coroutinesVersion: String by project
 
 plugins {
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
 }
 
@@ -39,7 +40,7 @@ dependencies {
 
     implementation(project(":preference"))
     implementation(project(":database"))
-    implementation(project(":domain"))
+    api(project(":domain"))
     implementation(project(":common"))
 
     testImplementation("junit:junit:4.13.2")

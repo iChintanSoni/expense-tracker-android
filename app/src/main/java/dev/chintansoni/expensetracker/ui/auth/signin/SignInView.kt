@@ -1,6 +1,11 @@
 package dev.chintansoni.expensetracker.ui.auth.signin
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.OutlinedButton
@@ -20,7 +25,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.EmailIcon
 import dev.chintansoni.expensetracker.ui.theme.PasswordIcon
@@ -41,13 +46,13 @@ fun SignInView(navController: NavController = rememberNavController()) {
     LaunchedEffect(key1 = effect) {
         when (effect) {
             SignInContract.Effect.NavigateToHome -> {
-                navController.navigate(MainRoute.SignInToHomeViewRoute)
+                navController.navigate(MainViewRoute.SignInToHomeViewRoute)
             }
             SignInContract.Effect.NavigateToForgotPassword -> {
-                navController.navigate(MainRoute.ForgotPasswordViewRoute)
+                navController.navigate(MainViewRoute.ForgotPasswordViewRoute)
             }
             SignInContract.Effect.NavigateToSignUp -> {
-                navController.navigate(MainRoute.SignUpViewRoute)
+                navController.navigate(MainViewRoute.SignUpViewRoute)
             }
             else -> {}
         }

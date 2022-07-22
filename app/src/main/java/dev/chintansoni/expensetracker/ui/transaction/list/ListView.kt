@@ -34,7 +34,7 @@ import androidx.navigation.NavController
 import dev.chintansoni.domain.model.TransactionDetail
 import dev.chintansoni.domain.model.generateDummyTransactions
 import dev.chintansoni.expensetracker.R
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.Typography
 import org.koin.androidx.compose.viewModel
@@ -52,7 +52,7 @@ fun TransactionsView(mainNavController: NavController) {
     LaunchedEffect(key1 = effect, block = {
         when (effect) {
             is ListViewContract.Effect.NavigateToDetail -> mainNavController.navigate(
-                MainRoute.TransactionDetailViewRoute(
+                MainViewRoute.TransactionDetailViewRoute(
                     (effect as ListViewContract.Effect.NavigateToDetail).transactionId
                 )
             )
@@ -78,6 +78,7 @@ private fun TransactionsContent(
 @Preview(showBackground = true)
 @Composable
 private fun NoTransactionsAvailable() {
+    val maxWidth = 0.7f
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -87,7 +88,7 @@ private fun NoTransactionsAvailable() {
             text = "No transactions to show. Click + to add",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(0.7f),
+                .fillMaxWidth(maxWidth),
             textAlign = TextAlign.Center,
             fontSize = 25.sp
         )

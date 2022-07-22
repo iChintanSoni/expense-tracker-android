@@ -6,7 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import org.koin.androidx.compose.viewModel
 
@@ -22,10 +22,10 @@ fun SplashView(navController: NavController = rememberNavController()) {
     LaunchedEffect(key1 = effect) {
         when (effect) {
             SplashContract.Effect.NavigateToHome -> {
-                navController.navigate(MainRoute.SplashToHomeViewRoute)
+                navController.navigate(MainViewRoute.SplashToHomeViewRoute)
             }
             SplashContract.Effect.NavigateToSignIn -> {
-                navController.navigate(MainRoute.SplashToSignInViewRoute)
+                navController.navigate(MainViewRoute.SplashToSignInViewRoute)
             }
             else -> {}
         }

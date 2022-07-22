@@ -14,3 +14,11 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 tasks.withType<io.gitlab.arturbosch.detekt.DetektCreateBaselineTask>().configureEach {
     jvmTarget = "1.8"
 }
+
+detekt {
+    source = files("src/main/java", "src/main/kotlin")
+    config = files("../config/detekt/detekt.yml")
+    autoCorrect = true
+    parallel = true
+    reportsDir = File("../config/detekt/reports")
+}

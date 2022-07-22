@@ -17,7 +17,7 @@ import dev.chintansoni.expensetracker.ui.category.detail.categoryDetailRoute
 import dev.chintansoni.expensetracker.ui.category.list.categoriesRoute
 import dev.chintansoni.expensetracker.ui.home.homeRoute
 import dev.chintansoni.expensetracker.ui.home.setting.settingRoute
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.theme.ExpenseTrackerTheme
 import dev.chintansoni.expensetracker.ui.transaction.detail.transactionDetailRoute
 
@@ -45,7 +45,7 @@ fun App() {
 
     NavHost(
         navController = navController,
-        startDestination = MainRoute.SplashViewRoute.route
+        startDestination = MainViewRoute.SplashViewRoute.route
     ) {
         authRoute(navController)
         homeRoute(navController)

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-class CategoryRepositoryImpl(
+internal class CategoryRepositoryImpl(
     private val categoryDao: CategoryDao
 ) : CategoryRepository {
 
@@ -56,7 +56,19 @@ class CategoryRepositoryImpl(
         return categoryDao.upsertCategory(category.toDBModel())
     }
 
+    override suspend fun upsertAndGetCategory(category: Category): Category {
+        val categoryId = upsertCategory(category)
+        return getCategoryById(categoryId)
+            ?: throw UpsertCategoryException(
+                category = category,
+                categoryId = categoryId
+            )
+    }
+
     override suspend fun clear() {
         return categoryDao.clearTable()
     }
 }
+
+class UpsertCategoryException(category: Category, categoryId: Long) :
+    Exception("Error updating category: $category & getting category with Id: $categoryId")

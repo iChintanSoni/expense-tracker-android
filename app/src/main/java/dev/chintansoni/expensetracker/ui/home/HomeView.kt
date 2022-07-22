@@ -30,7 +30,7 @@ import dev.chintansoni.expensetracker.ui.home.list.ListView
 import dev.chintansoni.expensetracker.ui.home.list.ROUTE_LIST
 import dev.chintansoni.expensetracker.ui.home.profile.ProfileView
 import dev.chintansoni.expensetracker.ui.home.profile.ROUTE_PROFILE
-import dev.chintansoni.expensetracker.ui.navigator.MainRoute
+import dev.chintansoni.expensetracker.ui.navigator.MainViewRoute
 import dev.chintansoni.expensetracker.ui.navigator.navigate
 import dev.chintansoni.expensetracker.ui.theme.AddIcon
 import dev.chintansoni.expensetracker.ui.theme.ChartIcon
@@ -50,10 +50,10 @@ fun NavGraphBuilder.homeRoute(navController: NavController) {
 @Composable
 fun HomeView(navController: NavController = rememberNavController()) {
     val onSettingClick: () -> Unit = {
-        navController.navigate(MainRoute.SettingViewRoute)
+        navController.navigate(MainViewRoute.SettingViewRoute)
     }
     val onAddClick: () -> Unit = {
-        navController.navigate(MainRoute.TransactionDetailViewRoute(0))
+        navController.navigate(MainViewRoute.TransactionDetailViewRoute(0))
     }
     HomeContent(
         mainNavController = navController,

@@ -32,9 +32,7 @@ class DetailViewModel(
 
     private fun saveCategory() {
         launchInIO {
-            val categoryId = categoryRepository.upsertCategory(currentState.category)
-            val updatedCategory = categoryRepository.getCategoryById(categoryId)
-                ?: throw Exception("Error updating category: ${currentState.category} & getting category with Id: $categoryId")
+            val updatedCategory = categoryRepository.upsertAndGetCategory(currentState.category)
             setState { copy(category = updatedCategory, isEditMode = false, isDeleteMode = false) }
             setEffect { DetailViewContract.Effect.SaveFinished }
         }

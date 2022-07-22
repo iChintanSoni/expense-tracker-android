@@ -1,6 +1,7 @@
 package dev.chintansoni.repository
 
 import dev.chintansoni.database.databaseModule
+import dev.chintansoni.domain.domainModule
 import dev.chintansoni.domain.repository.CategoryRepository
 import dev.chintansoni.domain.repository.TransactionDetailRepository
 import dev.chintansoni.domain.repository.TransactionRepository
@@ -28,4 +29,4 @@ val repositoryModules = module {
     single<CategoryRepository> {
         CategoryRepositoryImpl(get())
     }
-}.plus(databaseModule).plus(preferenceModule)
+}.plus(databaseModule).plus(preferenceModule).plus(domainModule)

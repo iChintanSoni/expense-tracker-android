@@ -6,6 +6,7 @@ val targetSDKVersion: String by project
 
 plugins {
     id("com.android.library")
+    id("io.gitlab.arturbosch.detekt")
     kotlin("android")
 }
 
@@ -41,5 +42,5 @@ android {
 dependencies {
     implementation("io.insert-koin:koin-core:$koinVersion")
     testImplementation("io.insert-koin:koin-test:$koinVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDateTimeVersion")
+    api("org.jetbrains.kotlinx:kotlinx-datetime:$kotlinxDateTimeVersion")
 }
